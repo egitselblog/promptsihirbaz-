@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tek Sayfa Prompt Sihirbazı (Kompakt ve Canlı)</title>
+    <!-- Tailwind CSS ve Inter Font -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* YENİ CANLI RENK PALETİ */
+            --color-primary-light: #F9FAFB; /* Açık Gri */
+            --color-primary-dark: #1F2937; /* Ana Metin (Koyu Gri/Siyah) */
+            --color-accent-vibrant: #F97316; /* Canlı Vurgu (Turuncu) */
+            --color-success: #10B981; /* Canlı Yeşil (Seçim) */
+            --color-text-dark: #1F2937;
+            --color-transparent-grey: rgba(0, 0, 0, 0.05); /* Yarı Saydam Açık Gri */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--color-primary-light); 
+            transition: background-color 0.3s;
+        }
+
+        /* Ana Kapsayıcı Stil */
+        .prompt-container {
+            max-width: 1000px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15); /* Daha belirgin gölge */
+        }
+
+        /* Seçenek Kartları: Boyutlar */
+        .option-card {
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            border-radius: 6px; 
+            font-size: 0.75rem; 
+            padding: 0.3rem 0.5rem; 
+            width: 100%; 
+            
+            /* Seçilmemiş durumda Yarı Saydam Gri */
+            background-color: var(--color-transparent-grey) !important;
+            color: var(--color-primary-dark) !important;
+            border: 1px solid rgba(0, 0, 0, 0.1) !important; 
+            font-weight: 500;
+        }
+
+        .option-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            background-color: rgba(0, 0, 0, 0.1) !important; /* Hover'da hafif koyulaştırma */
+        }
+
+        .option-card.selected {
+            background-color: var(--color-success) !important;
+            color: #FFFFFF !important; /* Seçilen yazı beyaz yapıldı */
+            border-color: #059669 !important;
+            transform: scale(1.02); 
+            font-weight: 700;
+        }
+        
+        /* Özel Yaz Butonu Stili */
+        .custom-write-button {
+            transition: all 0.2s;
+            border: 1px solid var(--color-primary-dark);
+            color: var(--color-primary-dark);
+            background-color: transparent;
+            font-weight: 500;
+        }
+
+        .custom-write-button:hover {
+            background-color: #FEE2E2; /* Açık Kırmızı/Pembe Hover */
+        }
+
+        /* KATEGORİ KAPSAYICISI: 3 Sütunlu Grid */
+        #category-wrapper {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr); 
+            gap: 20px;
+        }
+        @media (min-width: 768px) {
+            #category-wrapper {
+                grid-template-columns: repeat(3, 1fr); 
+            }
+            .free-text-box {
+                grid-column: span 3; 
+            }
+        }
+        
+        /* Kategori Kartı Stili: Padding */
+        .category-box {
+            padding: 1rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            height: 100%; 
+            transition: all 0.3s ease-in-out; 
+            
+            /* Dış Kartlar Hepsi Beyaz */
+            background-color: #FFFFFF !important; 
+        }
+
+        /* Kategori Kartı Hover Hareketi */
+        .category-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Category Title */
+        .category-box h3 {
+            color: var(--color-primary-dark);
+            font-size: 1.05rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        /* SEÇENEKLER KAPSAYICISI: İÇ İçe 2 Sütunlu Grid */
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr); 
+            gap: 6px; 
+        }
+        @media (min-width: 640px) { 
+            .options-grid {
+                grid-template-columns: repeat(2, 1fr); 
+            }
+        }
+        
+        /* Temel Prompt Alanı KALDIRILDI, ancak boşluğu tutmak için eski ID'yi tutan bir div bıraktım */
+        #user-base-prompt {
+            /* Stil kaldırıldı */
+        }
+        
+        /* Sabit Footer */
+        .footer-fixed {
+            position: sticky;
+            bottom: 0;
+            z-index: 20;
+            background-color: white;
+            padding-bottom: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #E5E7EB;
+            max-width: 1000px;
+            margin: 0 auto;
+            left: 0;
+            right: 0;
+            display: flex; 
+            justify-content: center; 
+            gap: 1rem; 
+        }
+
+        /* YENİ: Gradient Buton Stilleri */
+        #generate-btn {
+            background-color: #1F2937 !important; 
+            color: transparent; 
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.6); 
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Butonun asıl arka planını koru ve Hover Efekti */
+        #generate-btn::before {
+            content: attr(data-text); 
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            z-index: 20;
+            
+            /* Altın Rengi Yazı Gradienti */
+            font-weight: 700;
+            background-image: linear-gradient(45deg, #FACC15, #FBBF24, #FEF3C7);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1rem;
+        }
+        
+        #generate-btn:hover {
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.8);
+            transform: translateY(-2px);
+            background-color: #4B5563 !important; 
+        }
+        
+        #generate-btn {
+            color: white; 
+        }
+
+        /* Kategori Sembolü Stili */
+        .category-icon {
+            margin-right: 8px;
+            width: 20px;
+            height: 20px;
+            color: var(--color-accent-vibrant); 
+        }
+
+        /* İpucu Sembolü Stili */
+        .tip-icon {
+            width: 18px;
+            height: 18px;
+            color: #3B82F6; /* Mavi Simge */
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
+
+        /* Yeni İpucu Kutusu Stili */
+        .tips-box {
+             background-color: #FFFBEB; /* Açık sarımsı ton (Gönderdiğiniz görsele yakın) */
+             border: 1px solid #FCD34D;
+        }
+        .tips-title {
+            color: #D97706; /* Koyu Turuncu başlık */
+            font-weight: 700;
+        }
+        
+        /* Modal Stilleri */
+        .handbook-content {
+            max-height: 80vh; 
+            overflow-y: auto; 
+            padding-right: 15px; 
+            color: #333;
+        }
+        .handbook-content h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            border-bottom: 2px solid #F3F4F6;
+            padding-bottom: 5px;
+            color: var(--color-primary-dark);
+        }
+        .handbook-content h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 1rem;
+            color: var(--color-accent-vibrant);
+        }
+        .handbook-content p {
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+        .handbook-content ul {
+            list-style: disc;
+            margin-left: 20px;
+        }
+        
+        /* YENİ KOPYALA BUTONU STİLİ */
+        #copy-final-btn {
+            background-color: #E5E7EB; 
+            color: var(--color-primary-dark);
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #D1D5DB;
+        }
+        
+        #copy-final-btn:hover {
+            background-color: #D1D5DB;
+        }
+        
+        .copy-success {
+            background-color: var(--color-success) !important;
+            color: white !important;
+            border-color: #059669 !important;
+        }
+
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <!-- Ana Prompt Oluşturucu Uygulaması -->
+    <div class="prompt-container w-full bg-white rounded-2xl p-6 md:p-10 mx-auto flex flex-col">
+
+        <header class="mb-8 pb-4 border-b border-gray-100 flex justify-between items-center">
+            <div class="flex flex-col">
+                <h1 class="text-3xl font-light text-gray-800 mb-1">
+                    <span class="text-gray-600 font-bold">PROMPT</span> <span class="text-gray-500">SİHİRBAZI</span>
+                </h1>
+                <p class="text-sm text-gray-400 mt-2">Görselinizi oluşturmak için tüm anahtar kelimeleri seçin veya kendiniz ekleyin.</p>
+            </div>
+            
+            <!-- EL KİTABI BUTONU (SAĞ ÜST KÖŞE) -->
+            <button id="handbook-btn" class="flex items-center space-x-2 p-2 rounded-xl text-sm font-semibold text-gray-600 hover:text-gray-800 hover:bg-gray-100 transition duration-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13M3.324 12h17.352M12 21.747L2.248 12 12 2.253 21.752 12 12 21.747zM3 17.069V7.93c0-.361.312-.647.674-.593l17.29 2.502c.362.054.606.376.606.744v8.13c0 .373-.245.698-.61.748l-17.289 2.37c-.365.05-.674-.236-.674-.597zM16 12l2.37-2.37c.184-.184.484-.184.668 0l1.414 1.414c.184.184.184.484 0 .668L16 12zM8 12l-2.37 2.37c.184.184-.484.184-.668 0L3.548 13.956c-.184-.184-.184-.484 0-.668L8 12z" /></svg>
+                <span>El Kitabı</span>
+            </button>
+        </header>
+
+        <!-- KATEGORİLER İÇERİĞİ -->
+        <main id="category-wrapper">
+            <!-- Kategoriler JS ile buraya eklenecek -->
+        </main>
+        
+        <!-- Prompt Oluşturma ve Sıfırla Butonları -->
+        <footer class="mt-8 pt-6">
+            <div class="footer-fixed">
+                <!-- data-text eklendi ve arka plan/yazı CSS ile ayarlandı -->
+                <button id="generate-btn" 
+                        class="w-48 py-2 rounded-xl font-bold text-base transition duration-300"
+                        data-text="Prompt Oluştur">
+                    Prompt Oluştur
+                </button>
+                <button id="reset-btn" class="w-24 bg-gray-200 text-gray-700 py-2 rounded-xl font-bold text-base transition duration-300 hover:bg-gray-300">
+                    Sıfırla
+                </button>
+            </div>
+        </footer>
+        
+        <!-- PROMPT OLUŞTURMA İPUÇLARI ALANI YENİ YERİNDE (Footer'dan sonra) -->
+        <section id="tips-section" class="mt-8 p-4 rounded-xl shadow-sm tips-box">
+            <h2 class="text-xl tips-title mb-4 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-3 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                Profesyonel İpuçları
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-sm text-gray-700">
+                <div class="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="tip-icon mt-1 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664.886l.336-.091A4 4 0 0113 10m-3.5 0v3m3.5-3v3m1.5-1.5h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <span>Seçenekleri karşılaştırarak en uygun kombinasyonu bulun.</span>
+                </div>
+                <div class="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="tip-icon mt-1 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.526a2 2 0 01-1.789-2.894l3.5-7A2 2 0 0114 10zM5 18H3a2 2 0 01-2-2v-3a2 2 0 012-2h3" /></svg>
+                    <span>Renk ve doku seçimi atmosferi büyük ölçüde etkiler.</span>
+                </div>
+                <div class="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="tip-icon mt-1 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+                    <span>Kompozisyon kuralları profesyonel görünüm sağlar.</span>
+                </div>
+                <div class="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="tip-icon mt-1 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                    <span>Işıklandırma seçimi ruh halini yansıtır.</span>
+                </div>
+                <div class="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="tip-icon mt-1 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 10V3L4 14h7v7l9-11h-7z" /></svg>
+                    <span>Lens seçimi perspektifi ve derinliği belirler.</span>
+                </div>
+                <div class="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="tip-icon mt-1 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13M3.324 12h17.352M12 21.747L2.248 12 12 2.253 21.752 12 12 21.747z" /></svg>
+                    <span>El kitabından detaylı bilgi alabilirsiniz.</span>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- MODAL 1: PROMPT SONUCU (TEK KUTU) -->
+        <div id="modal" class="fixed inset-0 bg-gray-900 bg-opacity-80 flex items-center justify-center p-4 transition-opacity duration-300 opacity-0 pointer-events-none z-50">
+            <div id="modal-content" class="bg-white rounded-xl p-6 w-full max-w-2xl transform transition-all duration-300 scale-95">
+                <h3 class="text-2xl font-bold text-gray-800 mb-3 flex justify-between items-center">
+                    Prompt Hazır!
+                    <button id="close-modal-btn-x" class="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </h3>
+                <p class="text-xs text-gray-500 mb-3">Oluşturulan prompt'u aşağıda görebilirsiniz.</p>
+                
+                <!-- SADECE TÜRKÇE PROMPT KUTUSU -->
+                <div class="flex flex-col">
+                    <label class="text-sm font-semibold text-gray-700 mb-2 flex items-center justify-between">
+                        Oluşturulan Prompt
+                        <!-- KOPYALA BUTONU: Yeni stil ve ID'ye referans veren JS -->
+                        <button id="copy-final-btn" class="text-xs font-medium transition duration-150">
+                            Kopyala
+                        </button>
+                    </label>
+                    <div class="bg-gray-100 p-3 rounded-xl border border-gray-200 flex-grow">
+                        <textarea id="prompt-output-final" rows="8" class="w-full bg-transparent resize-none text-gray-700 font-medium text-sm" readonly></textarea>
+                    </div>
+                </div>
+
+                <!-- Çeviri kısmı iptal edildiği için spinner kaldırıldı -->
+            </div>
+        </div>
+
+        <!-- MODAL 2: EL KİTABI MODALI -->
+        <div id="handbook-modal" class="fixed inset-0 bg-gray-900 bg-opacity-80 flex items-center justify-center p-4 transition-opacity duration-300 opacity-0 pointer-events-none z-50">
+            <div class="bg-white rounded-xl p-6 w-full max-w-3xl transform transition-all duration-300 scale-95">
+                <h3 class="text-3xl font-bold text-gray-800 mb-4 flex justify-between items-center">
+                    AI Prompt Oluşturma El Kitabı
+                    <button id="close-handbook-btn" class="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </h3>
+                <div id="handbook-content" class="handbook-content text-gray-700">
+                    <!-- İçerik JS ile eklenecek -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        
+        // --- API İLE İLGİLİ KODLAR VE DEĞİŞKENLER TAMAMEN KALDIRILDI ---
+        
+        // KATEGORİ VERİLERİ ve ICON SVG FONKSİYONU
+        const getIconSvg = (name) => {
+            const icons = {
+                // Ana Kategoriler için semboller
+                'ana_konu': `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="category-icon"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>`, // User
+                'aksiyon_duygu': `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="category-icon"><path d="M14.5 12.5l-3 3-2 2"></path><path d="M13 19l-3 3-2-2"></path><path d="M18 10l-3 3-2 2"></path><path d="M22 8l-3 3-2 2"></path><path d="M16 4l-3 3-2 2"></path><path d="M10 2l-3 3-2 2"></path></svg>`, // Activity
+                'mekan': `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="category-icon"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>`, // MapPin
+                'sanat_stili': `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="category-icon"><path d="M12 21c-2.76 0-5-2.24-5-5s2.24-5 5-5s5 2.24 5 5s-2.24 5-5 5z"></path><path d="M12 16v-5"></path><path d="M17.5 10c-1.39-1.29-3.22-2-5-2s-3.61.71-5 2"></path><path d="M12 2v2"></path><path d="M20 16h-2"></path><path d="M6 16H4"></path></svg>`, // Paintbrush
+                'kamera_acisi': `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="category-icon"><path d="M7 6l-3-3m0 0l-3 3m3-3v14m18-11l-3 3m0 0l-3-3m3 3V3"></path></svg>`, // TrendingUp (Açıları temsil etsin)
+                'lens_secimi': `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="category-icon"><ellipse cx="12" cy="12" rx="2" ry="4"></ellipse><path d="M4.5 10a7 7 0 1 0 15 0"></path><path d="M4.5 14a7 7 0 1 1 15 0"></path></svg>`, // Aperture
+                'isiklandirma': `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="category-icon"><path d="M15 14s1 2 2.5 2 2.5-2 2.5-2V2l-5 5-2.5-2.5L2 17l5 5 2.5-2.5 5-5v-5z"></path></svg>`, // Sun
+                'ruh_hali': `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="category-icon"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>`, // Smile (Duyguları temsil etsin)
+                'kompozisyon': `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="category-icon"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="M7 10l5 5 5-5"></path><path d="M12 15V3"></path></svg>`, // Grid
+                'renk_paleti': `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="category-icon"><circle cx="12" cy="12" r="10"></circle><path d="M6 18c-3-3-4.5-4.5-4-9"></path><path d="M18 6c3 3 4.5 4.5 4 9"></path><path d="M12 22c-3-3-4.5-4.5-4-9"></path></svg>`, // Palette
+                'doku': `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="category-icon"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line></svg>`, // Feather
+                'kalite': `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="category-icon"><path d="M12 20h9"></path><path d="M16.5 3.5l-3 3m-2 2l-3 3M7.5 16.5l3-3m2-2l3-3"></path><path d="M18 13l-3 3-2-2-3 3-2-2-3 3V10l3-3 2 2 3-3 2 2 3-3z"></path></svg>`, // Zap (Yüksek enerjiyi temsil etsin)
+                'serbest_prompt': `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="category-icon"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>`, // Edit
+            };
+            return icons[name] || `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="category-icon"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`; // Info
+        };
+
+        const categoriesData = [
+            // 1. ANA KONU/ÖZNE (Main Subject/Entity)
+            { id: 'ana_konu', title: '1. Ana Konu/Özne (Main Subject/Entity)', options: ['Genç kadın', 'Yaşlı adam', 'Çocuk', 'Kedi', 'Ejder', 'Köpek', 'Robot', 'Melek', 'Savaşçı', 'Prenses', 'Büyücü', 'Astronot', 'Şef', 'Doktor', 'Sanatçı', 'Müzisyen', 'Aile', 'Çift', 'Arkadaşlar', 'Araba', 'Motosiklet', 'Bina', 'Ev', 'Saray', 'Kale', 'Köprü', 'Gemi', 'Uçak', 'Manzara', 'Portre'], isMulti: false },
+            
+            // 2. AKSİYON/DUYGU (Action/Emotion)
+            { id: 'aksiyon_duygu', title: '2. Aksiyon/Duygu (Action/Emotion)', options: ['koşuyor', 'dans ediyor', 'gülümsüyor', 'ağlıyor', 'düşünüyor', 'savaşıyor', 'uyuyor', 'yürüyor', 'oturuyor', 'çalışıyor', 'okuyor', 'yazıyor', 'çiziyor', 'şarkı söylüyor', 'uyuyor', 'yemek yiyor', 'konuşuyor', 'dinleniyor', 'oyun oynuyor', 'spor yapıyor', 'meditasyon yapıyor', 'yoga yapıyor', 'bisiklet sürüyor', 'yüzüyor', 'müzik çalıyor', 'resim yapıyor', 'fotoğraf çekiyor', 'araba kullanıyor'], isMulti: false },
+            
+            // 3. MEKAN/ARKA PLAN (Location/Background)
+            { id: 'mekan', title: '3. Mekan/Arka Plan (Location/Background)', options: ['orman', 'şehir', 'plaj', 'dağ', 'uzay', 'saray', 'ev', 'okul', 'hastane', 'kafe', 'park', 'müze', 'kütüphane', 'stadyum', 'tiyatro', 'çöl', 'ada', 'köprü', 'tren istasyonu', 'havaalanı', 'alışveriş merkezi', 'restoran', 'sinema', 'kilise', 'cami', 'bahçe', 'çiftlik', 'deniz altı', 'mağara', 'şelale', 'göl', 'nehir', 'kasaba', 'köy'], isMulti: false },
+
+            // 4. SANAT STİLİ (Art Style)
+            { id: 'sanat_stili', title: '4. Sanat Stili (Art Style)', options: ['realistik', 'hiper realistik', 'fotoğraf gerçekçiliği', 'anime', 'manga', 'çizgi roman', 'sulu boya', 'yağlı boya', 'karakalem', 'dijital sanat', 'minimalist', 'sürrealist', 'empresyonist', 'pop art', 'art nouveau', 'barok', 'rönesans', 'modern', 'steampunk', 'cyberpunk', 'vintage', 'retro', 'klasik', 'abstract', 'pixel art', 'sketch', 'sinematik', 'film noir', 'fantastik', 'bilim kurgu'], isMulti: false },
+            
+            // 5. KAMERA AÇISI/ÇEKİM PLANI (Camera Angle/Shot Plan)
+            { id: 'kamera_acisi', title: '5. Kamera Açısı/Çekim Planı (Camera Angle/Shot Plan)', options: ['yakın çekim', 'orta çekim', 'uzak çekim', 'extreme yakın çekim', 'kuş bakışı', 'solucan bakışı', 'alçak açı', 'yüksek açı', 'göz hizası', 'profil çekim', 'ön çekim', 'yan çekim', '3/4 açı', 'panoramik', 'geniş açı', 'sinematik çekim', 'drone çekim', 'havadan çekim', 'el kamerası', 'tracking shot', 'dolly shot', 'over shoulder', 'point of view', 'establishing shot'], isMulti: false },
+            
+            // 6. LENS SEÇİMİ (Lens Selection)
+            { id: 'lens_secimi', title: '6. Lens Seçimi (Lens Selection)', options: ['14mm ultra geniş açı', '24mm geniş açı', '35mm sokak fotoğrafçılığı', '50mm normal', '85mm portre', '135mm orta telefoto', '200mm telefoto', '300mm süper telefoto', 'makro lens 60mm', 'makro lens 100mm', 'balık gözü 15mm', 'tilt-shift 24mm', 'anamorfik 35mm', 'anamorfik 50mm', 'vintage lens', 'cinema lens', 'prime lens', 'zoom lens', 'telephoto zoom', 'wide zoom', 'portrait lens', 'landscape lens', 'wildlife lens', 'sports lens'], isMulti: false },
+            
+            // 7. IŞIKLANDIRMA (Lighting)
+            { id: 'isiklandirma', title: '7. Işıklandırma (Lighting)', options: ['doğal ışık', 'altın saat', 'mavi saat', 'gün doğumu', 'gün batımı', 'öğle güneşi', 'bulutlu gün', 'neon ışık', 'LED ışık', 'mum ışığı', 'şömine ışığı', 'ay ışığı', 'studio ışık', 'softbox ışık', 'ring light', 'dramatik ışık', 'yumuşak ışık', 'volumetrik ışık', 'sinematik ışık', 'lens flare', 'god rays', 'renkli ışık', 'ambient ışık', 'soğuk ışık', 'sıcak ışık'], isMulti: false },
+            
+            // 8. RUH HALİ/ATMOSFER (Mood/Atmosphere)
+            { id: 'ruh_hali', title: '8. Ruh Hali/Atmosfer (Mood/Atmosphere)', options: ['mutlu', 'hüzünlü', 'romantik', 'dramatik', 'gizemli', 'korkunç', 'heyecan verici', 'sakin', 'huzurlu', 'enerjik', 'melankolik', 'nostaljik', 'umutlu', 'karanlık', 'aydınlık', 'sıcak', 'soğuk', 'samimi', 'yalnız', 'sessiz', 'dinamik', 'çılgın', 'agresif', 'renkli', 'canlı', 'mat', 'parlak'], isMulti: false },
+            
+            // 9. KOMPOZİSYON (Composition)
+            { id: 'kompozisyon', title: '9. Kompozisyon (Composition)', options: ['üçte bir kuralı', 'merkezi kompozisyon', 'simetrik', 'asimetrik', 'diagonal', 'spiral', 'altın oran', 'çerçeve içinde çerçeve', 'derinlik hissi', 'perspektif', 'leading lines', 'pattern', 'denge', 'negatif alan', 'minimalist kompozisyon', 'geometrik', 'organik', 'horizontal', 'vertical', 'triangular', 'circular'], isMulti: false },
+            
+            // 10. RENK PALETİ (Color Palette)
+            { id: 'renk_paleti', title: '10. Renk Paleti (Color Palette)', options: ['monokrom', 'siyah beyaz', 'sepia', 'renkli', 'pastel renkler', 'canlı renkler', 'mat renkler', 'neon renkler', 'warm tones', 'cool tones', 'kırmızı dominant', 'mavi dominant', 'yeşil dominant', 'sarı dominant', 'mor dominant', 'turuncu dominant', 'gri tonları', 'metalik renkler', 'altın tonları', 'gümüş tonları', 'vintage color grading', 'modern color grading', 'film look', 'digital look'], isMulti: false },
+            
+            // 11. DOKU/MATERYAL (Texture/Material)
+            { id: 'doku', title: '11. Doku/Materyal (Texture/Material)', options: ['pürüzsüz', 'pürüzlü', 'yumuşak', 'sert', 'parlak', 'mat', 'metalik', 'ahşap', 'taş', 'mermer', 'cam', 'plastik', 'kumaş', 'deri', 'kağıt', 'beton', 'tuğla', 'çelik', 'altın', 'gümüş', 'su', 'buz', 'kar', 'kum', 'toprak', 'çim', 'yaprak', 'tüy', 'vintage texture', 'grunge texture'], isMulti: false },
+            
+            // 12. KALİTE/ÇÖZÜNÜRLÜK (Quality/Resolution)
+            { id: 'kalite', title: '12. Kalite/Çözünürlük (Quality/Resolution)', options: ['4K', '8K', 'HD', 'Full HD', 'Ultra HD', 'Yüksek detay', 'Ultra yüksek detay', 'Profesyonel kalite', 'Sinematik kalite', 'Fotoğraf kalitesi', 'Ultra gerçekçi', 'Yüksek çözünürlük', 'Kristal netlik', 'IMAX kalite', 'HDR', 'HDR10', 'Anamorfik', 'Film grain', 'Sharp', 'Ultra sharp', 'Studio quality', 'Award winning', 'Masterpiece', 'Highly detailed'], isMulti: false, instruction: 'Tek bir kalite seviyesi seçin veya özel yazın.' },
+            
+            // 13. SERBEST PROMPT ALANI (Ek Anahtar Kelimeler)
+            { id: 'serbest_prompt', title: '13. Serbest Prompt Alanı (Ek Anahtar Kelimeler)', isFreeText: true, instruction: 'Buraya serbest anahtar kelimeler, sanatçı referansları veya model ipuçları ekleyebilirsiniz. (Virgülle ayırarak birden fazla ifade girebilirsiniz)' }
+        ];
+
+        let currentStep = 0; // Tek sayfa olduğu için adım mantığı kalktı, ancak kategorileri döngülemek için tutuldu.
+        const userSelections = {}; // Seçimleri tutan obje
+
+        // DOM Elementleri
+        const categoryWrapper = document.getElementById('category-wrapper');
+        const generateBtn = document.getElementById('generate-btn');
+        const resetBtn = document.getElementById('reset-btn'); // Yeni Sıfırla butonu
+        const modal = document.getElementById('modal');
+        const promptOutputFinal = document.getElementById('prompt-output-final'); // TEK ÇIKIŞ KUTUSU
+        // const promptOutputEN = document.getElementById('prompt-output-en'); // SİLİNDİ
+        // const loadingSpinner = document.getElementById('loading-spinner'); // SİLİNDİ
+
+        const handbookModal = document.getElementById('handbook-modal'); // YENİ: El Kitabı Modalı
+        const handbookContentDiv = document.getElementById('handbook-content'); // YENİ: El Kitabı İçerik Alanı
+        const handbookBtn = document.getElementById('handbook-btn'); // YENİ: El Kitabı Butonu
+        const closeHandbookBtn = document.getElementById('close-handbook-btn'); // YENİ: El Kitabı Kapatma Butonu
+        
+        // Modal Butonları
+        const copyFinalBtn = document.getElementById('copy-final-btn'); // TEK KOPYALA BUTONU
+        // const copyENBtn = document.getElementById('copy-en-btn'); // SİLİNDİ
+
+        const closeModalBtnX = document.getElementById('close-modal-btn-x');
+        const modalContent = document.getElementById('modal-content');
+
+
+        // Firebase Hazırlıkları
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        
+        let db, auth;
+        let userId;
+
+        // Firebase Importları
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, collection, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Firebase Başlatma
+        const initFirebase = async () => {
+            try {
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                } else {
+                    await signInAnonymously(auth);
+                }
+                
+                onAuthStateChanged(auth, (user) => {
+                    userId = user ? user.uid : 'anon-' + crypto.randomUUID();
+                    console.log("Kullanıcı ID'si:", userId);
+                    // renderAllCategories() burada çağrılmıyor, DOMContentLoaded içinde çağrılıyor
+                });
+            } catch (error) {
+                console.error("Firebase başlatılırken hata oluştu:", error);
+                // renderAllCategories() burada çağrılmıyor, DOMContentLoaded içinde çağrılıyor
+            }
+        };
+
+        // KATEGORİ HTML OLUŞTURMA FONKSİYONLARI (Tekrar kopyalama ihtiyacı nedeniyle buraya dahil edildi)
+        
+        function renderAllCategories() {
+            let allCategoriesHtml = '';
+            categoriesData.forEach(category => {
+                allCategoriesHtml += createCategoryHtml(category);
+            });
+            categoryWrapper.innerHTML = allCategoriesHtml;
+            
+            categoryWrapper.querySelectorAll('.options-grid .option-card').forEach(card => {
+                card.addEventListener('click', handleOptionClick);
+            });
+            categoryWrapper.querySelectorAll('.custom-write-button').forEach(btn => {
+                btn.addEventListener('click', toggleCustomInput);
+            });
+            
+            document.getElementById('serbest-prompt-textarea')?.addEventListener('input', (event) => {
+                userSelections['serbest_prompt'] = event.target.value.trim();
+            });
+        }
+        
+        function createCategoryHtml(category) {
+            if (category.isFreeText) {
+                const currentValue = userSelections[category.id] || '';
+                return `
+                    <div class="category-box free-text-box bg-white rounded-xl shadow-sm md:col-span-3">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">${getIconSvg(category.id)} ${category.title}</h3>
+                        ${category.instruction ? `<p class="text-sm mb-4 text-gray-500">${category.instruction}</p>` : ''}
+                        <textarea id="serbest-prompt-textarea"
+                                placeholder="${category.instruction}"
+                                rows="5"
+                                class="w-full p-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-300 focus:border-orange-500 transition duration-200 text-gray-700 font-medium">${currentValue}</textarea>
+                    </div>
+                `;
+            }
+
+            const isCustomActive = getCustomValue(category.id, category.options) !== '';
+            const customValue = isCustomActive ? getCustomValue(category.id, category.options) : '';
+
+            let optionsHtml = '';
+            category.options.forEach(option => {
+                const isSelected = isOptionSelected(category.id, option);
+                optionsHtml += `<button 
+                                class="option-card 
+                                ${isSelected ? 'selected' : 'bg-white hover:bg-gray-100'} 
+                                text-gray-700 font-medium border border-gray-200" 
+                                data-category-id="${category.id}" 
+                                data-value="${option}"
+                                data-is-multi="${category.isMulti || false}">
+                                ${option}
+                            </button>`;
+            });
+
+            const showCustomInput = !category.isMulti;
+
+            return `
+                <div class="category-box">
+                    <h3 class="text-lg font-bold text-gray-800 mb-3">${getIconSvg(category.id)} ${category.title}</h3>
+                    ${category.instruction ? `<p class="text-xs mb-3 text-gray-500">${category.instruction}</p>` : ''}
+                    
+                    <div class="options-grid">
+                        ${optionsHtml}
+                    </div>
+
+                    ${showCustomInput ? `
+                    <div class="custom-input-wrapper mt-4 flex flex-col items-start">
+                        <button id="custom-write-btn-${category.id}" data-category-id="${category.id}" class="custom-write-button py-2 px-4 rounded-xl text-sm transition">
+                            Özel Yaz
+                        </button>
+                        <input type="text" 
+                            id="custom-input-${category.id}"
+                            placeholder="Özel değerinizi buraya yazın..."
+                            value="${customValue}"
+                            class="w-full mt-3 p-3 border rounded-xl focus:ring-2 focus:ring-orange-300 focus:border-orange-500 transition duration-200 text-xs"
+                            oninput="handleCustomInput('${category.id}', this.value)"
+                            style="display: ${isCustomActive ? 'block' : 'none'};"
+                        />
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+        
+        function isOptionSelected(categoryId, option) {
+            const selection = userSelections[categoryId];
+            if (!selection) return false;
+            if (Array.isArray(selection)) {
+                return selection.includes(option);
+            }
+            return selection === option;
+        }
+        
+        function getCustomValue(categoryId, options) {
+            const selection = userSelections[categoryId];
+            if (!selection) return '';
+            
+            if (Array.isArray(selection)) return ''; 
+
+            if (options && options.includes(selection)) { 
+                return ''; 
+            }
+            return selection;
+        }
+        
+        function handleOptionClick(event) {
+            const card = event.currentTarget;
+            const categoryId = card.dataset.categoryId;
+            const value = card.dataset.value;
+            const isMulti = card.dataset.isMulti === 'true';
+
+            if (isMulti) {
+                if (!userSelections[categoryId]) {
+                    userSelections[categoryId] = [];
+                }
+
+                const index = userSelections[categoryId].indexOf(value);
+                if (index > -1) {
+                    userSelections[categoryId].splice(index, 1);
+                    card.classList.remove('selected');
+                    card.style.backgroundColor = 'var(--color-transparent-grey)';
+                    card.style.color = 'var(--color-primary-dark)';
+                    card.style.borderColor = 'rgba(0, 0, 0, 0.1)';
+                    card.classList.remove('bg-white', 'hover:bg-gray-100');
+                } else {
+                    userSelections[categoryId].push(value);
+                    card.classList.add('selected');
+                }
+            } else {
+                const container = card.closest('.category-box');
+                const currentSelected = container.querySelector('.option-card.selected');
+                
+                if (currentSelected && currentSelected !== card) {
+                    currentSelected.classList.remove('selected');
+                    currentSelected.style.backgroundColor = 'var(--color-transparent-grey)';
+                    currentSelected.style.color = 'var(--color-primary-dark)';
+                    currentSelected.style.borderColor = 'rgba(0, 0, 0, 0.1)';
+                    currentSelected.classList.remove('bg-white', 'hover:bg-gray-100');
+                }
+                
+                if (userSelections[categoryId] === value) {
+                    delete userSelections[categoryId];
+                    card.classList.remove('selected');
+                    card.style.backgroundColor = 'var(--color-transparent-grey)';
+                    card.style.color = 'var(--color-primary-dark)';
+                    card.style.borderColor = 'rgba(0, 0, 0, 0.1)';
+                    card.classList.remove('bg-white', 'hover:bg-gray-100');
+                } else {
+                    userSelections[categoryId] = value;
+                    card.classList.add('selected');
+                }
+                
+                const customInput = container.querySelector(`#custom-input-${categoryId}`);
+                const customWriteBtn = container.querySelector(`#custom-write-btn-${categoryId}`);
+                if (customInput && customInput.style.display !== 'none') {
+                    customInput.style.display = 'none';
+                    customWriteBtn.textContent = 'Özel Yaz';
+                    customInput.value = '';
+                }
+            }
+        }
+
+        function toggleCustomInput(event) {
+            const categoryId = event.currentTarget.dataset.categoryId;
+            const customInput = document.getElementById(`custom-input-${categoryId}`);
+            const container = event.currentTarget.closest('.category-box');
+            const customWriteBtn = event.currentTarget;
+            
+            if (!customInput) return;
+
+            const isInputVisible = customInput.style.display === 'block';
+
+            if (!isInputVisible) {
+                customInput.style.display = 'block';
+                customInput.focus();
+                customWriteBtn.textContent = 'İptal Et';
+
+                const currentSelected = container.querySelectorAll('.option-card.selected');
+                currentSelected.forEach(card => {
+                    card.classList.remove('selected');
+                    card.style.backgroundColor = 'var(--color-transparent-grey)';
+                    card.style.color = 'var(--color-primary-dark)';
+                    card.style.borderColor = 'rgba(0, 0, 0, 0.1)';
+                    card.classList.remove('bg-white', 'hover:bg-gray-100');
+                });
+                
+                userSelections[categoryId] = customInput.value.trim() || ''; 
+            } else {
+                customInput.style.display = 'none';
+                customWriteBtn.textContent = 'Özel Yaz';
+                customInput.value = '';
+                delete userSelections[categoryId];
+            }
+        }
+        
+        function handleCustomInput(categoryId, value) {
+            userSelections[categoryId] = value.trim();
+        }
+
+        function resetAll() {
+            for (const key in userSelections) {
+                delete userSelections[key];
+            }
+            
+            document.querySelectorAll('.custom-input').forEach(input => {
+                input.value = '';
+                input.style.display = 'none';
+            });
+
+            const serbestPromptArea = document.getElementById('serbest-prompt-textarea');
+            if (serbestPromptArea) serbestPromptArea.value = '';
+            
+            document.querySelectorAll('.option-card.selected').forEach(card => {
+                card.classList.remove('selected');
+                card.style.backgroundColor = 'var(--color-transparent-grey)';
+                card.style.color = 'var(--color-primary-dark)';
+                card.style.borderColor = 'rgba(0, 0, 0, 0.1)';
+                card.classList.remove('bg-white', 'hover:bg-gray-100');
+            });
+
+            document.querySelectorAll('.custom-write-button').forEach(btn => {
+                btn.textContent = 'Özel Yaz';
+            });
+
+            showSimpleMessage('Tüm seçimler sıfırlandı.', 'bg-yellow-100 text-yellow-800');
+        }
+        
+        async function savePromptToFirestore(promptData) {
+            if (!db) return; // Firestore başlatılmadıysa kaydetme
+
+            try {
+                const promptsCollectionRef = collection(db, `/artifacts/${appId}/users/${userId}/prompts`);
+                await setDoc(doc(promptsCollectionRef), {
+                    ...promptData,
+                    createdAt: serverTimestamp()
+                });
+                console.log("Prompt başarıyla kaydedildi.");
+            } catch (e) {
+                console.error("Prompt kaydı sırasında hata oluştu: ", e);
+            }
+        }
+
+        function openModal() {
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            modalContent.classList.remove('scale-95');
+            modalContent.classList.add('scale-100');
+        }
+
+        function closeModal() {
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            modalContent.classList.remove('scale-100');
+            modalContent.classList.add('scale-95');
+        }
+
+        function openHandbookModal() {
+            handbookModal.classList.remove('opacity-0', 'pointer-events-none');
+            handbookModal.querySelector('div:last-child').classList.remove('scale-95');
+            handbookModal.querySelector('div:last-child').classList.add('scale-100');
+        }
+        
+        function closeHandbookModal() {
+            handbookModal.classList.add('opacity-0', 'pointer-events-none');
+            handbookModal.querySelector('div:last-child').classList.remove('scale-100');
+            handbookModal.querySelector('div:last-child').classList.add('scale-95');
+        }
+
+        const loadHandbookContent = () => {
+            const handbookMarkdown = `# AI Prompt Oluşturma El Kitabı
+
+Bu el kitabı, görsel prompt oluşturucumuzdaki 13 kategori ve Serbest Prompt alanı hakkında detaylı bilgi ve profesyonel ipuçları sunar.
+
+---
+
+## 1. Ana Konu/Özne (Main Subject/Entity)
+
+Prompt'unuzun merkezindeki birincil unsur. AI'ın odak noktasını belirler.
+
+* **İnsan Konuları:** Yaş grubu, cinsiyet, meslek veya karakter türü belirtin.
+
+* **Diğer Konular:** Hayvan türü, ırkı, obje özellikleri veya fantastik yaratık detaylarını ekleyin.
+
+* **İpucu:** Seçtiğiniz öznenin ne olduğunu ne kadar net tanımlarsanız, sonuç o kadar başarılı olur.
+
+## 2. Aksiyon/Duygu (Action/Emotion)
+
+Öznenizin ne yaptığını veya hangi duygu durumunda olduğunu belirler. Görüntüye dinamizm ve duygusal derinlik katar.
+
+* **Fiziksel Aksiyonlar:** Koşma, dans etme, savaşma gibi hareket belirten fiiller kullanın.
+
+* **Duygusal Durumlar:** Mutluluk, hüzün, gizem gibi duygusal tepkileri netleştirin.
+
+* **Profesyonel İpucu:** Aksiyon ve duyguyu birleştirin (Örn: "Mutlulukla dans eden").
+
+## 3. Mekan/Arka Plan (Location/Background)
+
+Sahnenin geçtiği yer ve çevre. Mekan seçimi, atmosferi ve bağlamı büyük ölçüde belirler.
+
+* **Doğal/Kentsel/İç Mekanlar:** Orman, şehir, hastane, saray gibi spesifik yerler seçin.
+
+* **Fantastik Mekanlar:** Uzay, cyberpunk ortamı gibi hayal ürünü ortamlar kullanın.
+
+* **İpucu:** Gündüz, gece, yağmurlu veya karlı gibi zaman ve hava durumu detaylarını eklemeyi unutmayın.
+
+## 4. Sanat Stili (Art Style)
+
+Görüntünün genel görsel estetiğini belirler. Sonucun karakterini ve dokusunu etkiler.
+
+* **Gerçekçi Stiller:** Hiper Realistik, Fotoğraf Gerçekçiliği, Sinematik.
+
+* **Dijital Sanat:** Dijital Sanat, Konsept Sanatı, 3D Render.
+
+* **Geleneksel Sanat:** Yağlı Boya, Sulu Boya, Karakalem.
+
+* **Popüler Stiller:** Anime, Manga, Pop Art, Cyberpunk, Steampunk.
+
+## 5. Kamera Açısı/Çekim Planı (Camera Angle/Shot Plan)
+
+Görüntünün ne kadar yakından ve hangi açıdan çekileceğini belirler. Hikayenin anlatımını etkiler.
+
+* **Çekim Planları:** Yakın Çekim (duygusal bağ), Uzak Çekim (çevresel bağlam).
+
+* **Açı Türleri:** Kuş Bakışı (geniş alan), Solucan Bakışı (gökyüzü), Alçak Açı (güç/otorite).
+
+* **Özel Çekimler:** Drone Çekim, Over Shoulder, Point of View (POV).
+
+## 6. Lens Seçimi (Lens Selection)
+
+Görüntünün perspektifini ve alan derinliğini (bokeh) kontrol eder.
+
+* **Geniş Açı (14-35mm):** Manzara, mimari.
+
+* **Standart (35-85mm):** Doğal perspektif, günlük fotoğrafçılık.
+
+* **Telefoto (85mm+):** Portre, arka planı bulanıklaştırma (bokeh), sıkıştırılmış perspektif.
+
+* **Özel:** Makro (detay), Anamorfik (sinema filmi görünümü).
+
+## 7. Işıklandırma (Lighting)
+
+Görüntünün duygusal tonunu ve kalitesini belirler.
+
+* **Doğal Işık:** Altın Saat, Mavi Saat, Gün Batımı/Doğumu.
+
+* **Yapay Işık:** Neon, LED, Stüdyo Işık, Ring Light.
+
+* **Efektler:** God Rays (Tanrı Işınları), Volumetrik Işık, Lens Flare.
+
+* **İpucu:** Soğuk ışık (mavi tonlar) gizem veya hüzün, Sıcak ışık (sarı tonlar) huzur ve romantizm katar.
+
+## 8. Ruh Hali/Atmosfer (Mood/Atmosphere)
+
+Görüntünün izleyiciye vereceği duygusal hissi belirler.
+
+* **Pozitif:** Mutlu, Enerjik, Umutlu, Huzurlu.
+
+* **Dramatik:** Gizemli, Korkunç, Melankolik, Karanlık.
+
+* **Özel:** Nostaljik, Sürrealist (Rüya gibi), Dinamik.
+
+* **İpucu:** Ruh halinizi renk paleti ve ışıklandırma seçimleriyle destekleyin.
+
+## 9. Kompozisyon (Composition)
+
+Görüntüdeki öğelerin düzenlenmesi. İyi bir kompozisyon, görüntüyü profesyonel ve çekici yapar.
+
+* **Temel Kurallar:** Üçte Bir Kuralı, Altın Oran.
+
+* **Yerleşim:** Merkezi Kompozisyon, Simetrik/Asimetrik.
+
+* **Teknikler:** Leading Lines (Öncü Çizgiler), Çerçeve İçinde Çerçeve, Negatif Alan.
+
+* **İpucu:** Diagonal çizgiler dinamizm, simetri denge hissi verir.
+
+## 10. Renk Paleti (Color Palette)
+
+Görüntünün genel renk şeması.
+
+* **Uyumlar:** Monokrom (Tek renk tonları), Complementary (Zıt renkler), Analogous (Yakın renkler).
+
+* **Tonlar:** Pastel Renkler, Canlı Renkler, Warm/Cool Tones.
+
+* **Dominant Renkler:** Kırmızı Dominant, Mavi Dominant gibi birincil renk vurgusu.
+
+## 11. Doku/Materyal (Texture/Material)
+
+Görüntüdeki yüzeylerin dokunsal kalitesi. Gerçekçilik ve derinlik katar.
+
+* **Doğal:** Ahşap, Taş, Deri, Kumaş, Tüy, Çim.
+
+* **Metal:** Altın, Gümüş, Çelik, Bronz.
+
+* **Yüzey:** Pürüzsüz, Pürüzlü, Parlak, Mat.
+
+* **İpucu:** Kontrast yaratmak için (Örn: "Pürüzsüz metal ve pürüzlü ahşap") farklı dokuları birleştirin.
+
+## 12. Kalite/Çözünürlük (Quality/Resolution)
+
+Son çıktının detay, netlik ve görsel mükemmellik seviyesini belirler.
+
+* **Çözünürlük:** 4K, 8K, HD, Ultra HD.
+
+* **Kalite Tanımları:** Ultra Gerçekçi, Highly Detailed (Yüksek Detay), Sharp, Masterpiece (Şaheser).
+
+* **Özel Formatlar:** IMAX Kalite, HDR, Anamorfik.
+
+* **İpucu:** Bu terimleri prompt'un sonuna eklemek, genellikle AI'ın kaliteye odaklanmasını sağlar.
+
+## 13. Serbest Prompt Alanı (Ek Anahtar Kelimeler)
+
+Kategorilere sığmayan, sanatsal veya teknik açıdan özel detayları ekleyebileceğiniz alan.
+
+* **Kullanım Amacı:** Sanatçı referansları (Örn: "Greg Rutkowski tarzında"), spesifik render motorları ("Unreal Engine Render"), ek ışık efektleri ("Volumetrik ışık") gibi eklemeler yapmak.
+
+* **En İyi Uygulama:** Ana kategorilerdeki seçimlerinizi destekleyecek ve güçlendirecek son dokunuşları burada yapın.
+
+**Yüksek Kaliteli Prompt Oluşturma Kuralı:**
+Promptlarınızı genel olarak şu akışta düzenleyin: **[Özne]**, **[Aksiyon/Duygu]**, **[Mekan]**, **[Stil]**, **[Işıklandırma & Lens]**, **[Kalite Detayları]**.`;
+
+            let htmlContent = handbookMarkdown
+                .replace(/### (.*)/g, '<h3>$1</h3>') 
+                .replace(/## (.*)/g, '<h2>$1</h2>') 
+                .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>') 
+                .replace(/\* (.*)/g, '<li>$1</li>'); 
+            
+            htmlContent = htmlContent.split('\n').map(line => {
+                if (line.trim().startsWith('<li>') || line.trim().startsWith('<h')) {
+                    return line;
+                }
+                return line + '<br>';
+            }).join('');
+
+            htmlContent = `<ul>${htmlContent}</ul>` 
+            
+            htmlContent = htmlContent.replace(/<li>(.*?)<br>/g, '<li>$1');
+
+
+            handbookContentDiv.innerHTML = htmlContent;
+        };
+
+        function showSimpleMessage(message, classes = 'bg-blue-100 text-blue-800') {
+            let msgBox = document.getElementById('simple-message-box');
+            
+            if (!msgBox) {
+                msgBox = document.createElement('div');
+                msgBox.id = 'simple-message-box';
+                msgBox.className = 'fixed top-4 right-4 p-4 rounded-xl shadow-lg transition-all duration-500 transform translate-y-10 opacity-0 z-50';
+                document.body.appendChild(msgBox);
+            }
+
+            msgBox.className = `fixed top-4 right-4 p-4 rounded-xl shadow-lg transition-all duration-500 transform opacity-0 z-50 ${classes}`;
+            msgBox.textContent = message;
+
+            setTimeout(() => {
+                msgBox.classList.remove('translate-y-10', 'opacity-0');
+                msgBox.classList.add('translate-y-0', 'opacity-100');
+            }, 50);
+
+            setTimeout(() => {
+                msgBox.classList.remove('translate-y-0', 'opacity-100');
+                msgBox.classList.add('translate-y-10', 'opacity-0');
+            }, 3000);
+        }
+
+        const copySpecificPrompt = (elementId) => {
+            const textarea = document.getElementById(elementId);
+            const copyBtn = document.getElementById('copy-final-btn');
+            
+            if (!textarea || !textarea.value || !copyBtn) {
+                showSimpleMessage('Kopyalanacak prompt bulunamadı.', 'bg-red-100 text-red-800');
+                return;
+            }
+            
+            textarea.select();
+            textarea.setSelectionRange(0, 99999); 
+            
+            try {
+                document.execCommand('copy');
+                
+                // Başarı durumunda butonu yeşile çevir
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = 'Kopyalandı!';
+                copyBtn.classList.add('copy-success');
+                
+                showSimpleMessage(`Prompt panoya kopyalandı!`, 'bg-green-100 text-green-800');
+
+                // 1.5 saniye sonra eski haline döndür
+                setTimeout(() => {
+                    copyBtn.textContent = originalText;
+                    copyBtn.classList.remove('copy-success');
+                }, 1500);
+                
+            } catch (err) {
+                console.error('Kopyalama başarısız:', err);
+                showSimpleMessage('Kopyalama başarısız oldu.', 'bg-red-100 text-red-800');
+            }
+        };
+        
+        // ÇEVİRİ VE API İLE İLGİLİ FONKSİYONLAR SİLİNDİ
+
+        const generatePrompt = async () => {
+            let promptParts = [];
+            let isAnySelection = false;
+
+            // 1. Kategorilerden seçimleri topla
+            categoriesData.forEach(category => {
+                const selection = userSelections[category.id];
+                if (selection) {
+                    isAnySelection = true;
+                    if (Array.isArray(selection)) {
+                        promptParts.push(...selection.filter(val => val.trim() !== ''));
+                    } else if (selection.trim() !== '') {
+                        promptParts.push(selection.trim());
+                    }
+                }
+            });
+
+            const finalPrompt = promptParts.join(', ');
+
+            if (!isAnySelection) {
+                showSimpleMessage('Lütfen en az bir kategori seçimi yapın.', 'bg-red-100 text-red-800');
+                return;
+            }
+
+            // 2. Modalı aç ve prompt'u göster
+            openModal();
+            promptOutputFinal.value = finalPrompt;
+
+            // 3. Prompt'u kaydet (Sadece Türkçe/Final versiyonu)
+            await savePromptToFirestore({ 
+                turkish: finalPrompt,
+                finalPrompt: finalPrompt // Tutarlılık için
+            });
+        };
+
+
+        // DOMContentLoaded'da uygulama başlangıcı
+        document.addEventListener('DOMContentLoaded', () => {
+            // Kategori render işlemini hemen yap
+            renderAllCategories();
+            
+            // Firebase'i başlat
+            initFirebase(); 
+            
+            // Event Listener'lar
+            generateBtn.addEventListener('click', generatePrompt);
+            resetBtn.addEventListener('click', resetAll); 
+            
+            // Modal butonlarına Event Listener eklenmesi
+            copyFinalBtn.addEventListener('click', () => copySpecificPrompt('prompt-output-final'));
+            
+            closeModalBtnX.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => {
+                if (e.target.id === 'modal') {
+                    closeModal();
+                }
+            });
+
+            // YENİ: El Kitabı Event Listener'ları
+            handbookBtn.addEventListener('click', () => {
+                loadHandbookContent(); 
+                openHandbookModal(); 
+            });
+            closeHandbookBtn.addEventListener('click', closeHandbookModal);
+            handbookModal.addEventListener('click', (e) => {
+                if (e.target.id === 'handbook-modal') {
+                    closeHandbookModal();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
