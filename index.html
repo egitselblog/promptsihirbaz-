@@ -288,60 +288,80 @@
 
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body class="bg-gray-100">
 
-    <!-- Ana Prompt Oluşturucu Uygulaması -->
-    <div class="prompt-container w-full bg-white rounded-2xl p-6 md:p-10 mx-auto flex flex-col">
-
-        <header class="mb-8 pb-4 border-b border-gray-100 flex justify-between items-center">
-            <div class="flex flex-col">
-                <h1 class="text-3xl font-light text-gray-800 mb-1">
-                    <span class="text-gray-600 font-bold">PROMPT</span> <span class="text-gray-500">SİHİRBAZI</span>
-                </h1>
-                <p class="text-sm text-gray-400 mt-2">Görselinizi oluşturmak için tüm anahtar kelimeleri seçin veya kendiniz ekleyin.</p>
-            </div>
-            
-            <!-- EL KİTABI BUTONU (SAĞ ÜST KÖŞE) -->
-            <button id="handbook-btn" class="flex items-center space-x-2 p-2 rounded-xl text-sm font-semibold text-gray-600 hover:text-gray-800 hover:bg-gray-100 transition duration-200">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13M3.324 12h17.352M12 21.747L2.248 12 12 2.253 21.752 12 12 21.747zM3 17.069V7.93c0-.361.312-.647.674-.593l17.29 2.502c.362.054.606.376.606.744v8.13c0 .373-.245.698-.61.748l-17.289 2.37c-.365.05-.674-.236-.674-.597zM16 12l2.37-2.37c.184-.184.484-.184.668 0l1.414 1.414c.184.184.184.484 0 .668L16 12zM8 12l-2.37 2.37c.184.184-.484.184-.668 0L3.548 13.956c-.184-.184-.184-.484 0-.668L8 12z" /></svg>
-                <span>El Kitabı</span>
+    <!-- YENİ: ANA SAYFA GÖRÜNÜMÜ -->
+    <!-- DİKKAT: Aşağıdaki 'style' etiketindeki 'background-image' URL'sini kendi GitHub linkinizle değiştirin. -->
+    <!-- Örn: url('https://raw.githubusercontent.com/KULLANICI_ADINIZ/REPO_ADINIZ/main/anasayfaarkaplangorsel.png') -->
+    <div id="homepage-view" class="h-screen w-full flex items-center justify-center bg-gray-900" style="background-image: url('https://raw.githubusercontent.com/KULLANICI_ADINIZ/REPO_ADINIZ/main/anasayfaarkaplangorsel.png'); background-size: cover; background-position: center;">
+        <!-- Arka Plan Karartma Katmanı -->
+        <div class="absolute inset-0 bg-black/60 z-0"></div>
+        
+        <!-- İçerik -->
+        <div class="relative z-10 flex flex-col items-center text-center p-8">
+            <h1 class="text-5xl md:text-7xl font-bold text-white mb-4 shadow-lg" style="text-shadow: 2px 2px 8px rgba(0,0,0,0.7);">
+                AI Prompt Stüdyosu
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-200 mb-10 max-w-2xl" style="text-shadow: 1px 1px 4px rgba(0,0,0,0.7);">
+                Hayalinizdeki görseller için mükemmel prompt'ları yaratın. Başlamak için sihirbazı kullanın.
+            </p>
+            <button id="start-btn" class="bg-orange-600 hover:bg-orange-700 text-white font-bold text-lg py-4 px-12 rounded-xl transition duration-300 shadow-2xl transform hover:scale-105 ease-in-out">
+                Sihirbaza Başla
             </button>
-        </header>
+        </div>
+    </div>
 
-        <!-- KATEGORİLER İÇERİĞİ -->
-        <main id="category-wrapper">
-            <!-- Kategoriler JS ile buraya eklenecek -->
-        </main>
-        
-        <!-- Prompt Oluşturma ve Sıfırla Butonları -->
-        <footer class="mt-8 pt-6">
-            <div class="footer-fixed">
-                <!-- data-text eklendi ve arka plan/yazı CSS ile ayarlandı -->
-                <button id="generate-btn" 
-                        class="w-48 py-2 rounded-xl font-bold text-base transition duration-300"
-                        data-text="Prompt Oluştur">
-                    Prompt Oluştur
-                </button>
-                <button id="reset-btn" class="w-24 bg-gray-200 text-gray-700 py-2 rounded-xl font-bold text-base transition duration-300 hover:bg-gray-300">
-                    Sıfırla
-                </button>
-            </div>
-        </footer>
-        
-        <!-- PROMPT OLUŞTURMA İPUÇLARI ALANI YENİ YERİNDE (Footer'dan sonra) -->
-        <section id="tips-section" class="mt-8 p-4 rounded-xl shadow-sm tips-box">
-            <h2 class="text-xl tips-title mb-4 flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-3 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-                Profesyonel İpuçları
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-sm text-gray-700">
-                <div class="flex items-start">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="tip-icon mt-1 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664.886l.336-.091A4 4 0 0113 10m-3.5 0v3m3.5-3v3m1.5-1.5h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                    <span>Seçenekleri karşılaştırarak en uygun kombinasyonu bulun.</span>
+    <!-- YENİ: PROMPT OLUŞTURUCU GÖRÜNÜMÜ (Başlangıçta gizli) -->
+    <div id="prompt-creator-view" class="p-4 md:p-8" style="display: none;">
+
+        <!-- Ana Prompt Oluşturucu Uygulaması -->
+        <div class="prompt-container w-full bg-white rounded-2xl p-6 md:p-10 mx-auto flex flex-col">
+            
+            <!-- YENİDEN DÜZENLENMİŞ HEADER -->
+            <header class="mb-8 pb-4 border-b border-gray-100 flex justify-between items-center">
+                <div class="flex flex-col">
+                    <h1 class="text-3xl font-light text-gray-800 mb-1">
+                        <span class="text-gray-600 font-bold">PROMPT</span> <span class="text-gray-500">SİHİRBAZI</span>
+                    </h1>
+                    <p class="text-sm text-gray-400 mt-2">Görselinizi oluşturmak için tüm anahtar kelimeleri seçin veya kendiniz ekleyin.</p>
                 </div>
-                <div class="flex items-start">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="tip-icon mt-1 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.526a2 2 0 01-1.789-2.894l3.5-7A2 2 0 0114 10zM5 18H3a2 2 0 01-2-2v-3a2 2 0 012-2h3" /></svg>
-                    <span>Renk ve doku seçimi atmosferi büyük ölçüde etkiler.</span>
+                
+                <!-- EL KİTABI VE ANA SAYFA BUTONLARI -->
+                <div class="flex items-center space-x-4">
+                    <!-- YENİ: ANA SAYFA BUTONU -->
+                    <button id="home-btn" class="flex items-center space-x-2 p-2 rounded-xl text-sm font-semibold text-gray-600 hover:text-gray-800 hover:bg-gray-100 transition duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                        </svg>
+                        <span>Ana Sayfa</span>
+                    </button>
+                    
+                    <button id="handbook-btn" class="flex items-center space-x-2 p-2 rounded-xl text-sm font-semibold text-gray-600 hover:text-gray-800 hover:bg-gray-100 transition duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13M3.324 12h17.352M12 21.747L2.248 12 12 2.253 21.752 12 12 21.747zM3 17.069V7.93c0-.361.312-.647.674-.593l17.29 2.502c.362.054.606.376.606.744v8.13c0 .373-.245.698-.61.748l-17.289 2.37c-.365.05-.674-.236-.674-.597zM16 12l2.37-2.37c.184-.184.484-.184.668 0l1.414 1.414c.184.184.184.484 0 .668L16 12zM8 12l-2.37 2.37c.184.184-.484.184-.668 0L3.548 13.956c-.184-.184-.184-.484 0-.668L8 12z" /></svg>
+                        <span>El Kitabı</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- KATEGORİLER İÇERİĞİ (HATA İÇİN DÜZELTİLDİ) -->
+            <main id="category-wrapper">
+                <!-- Kategoriler JS ile buraya eklenecek -->
+            </main>
+
+            <!-- Prompt Oluşturma ve Sıfırla Butonları (YENİDEN DÜZENLENDİ) -->
+            <footer class="mt-8 pt-6">
+                <div class="footer-fixed">
+                    <!-- data-text eklendi ve arka plan/yazı CSS ile ayarlandı -->
+                    <button id="generate-btn" 
+                            class="w-48 py-2 rounded-xl font-bold text-base transition duration-300"
+                            data-text="Prompt Oluştur">
+                        Prompt Oluştur
+                    </button>
+                    <button id="reset-btn" class="w-24 bg-gray-200 text-gray-700 py-2 rounded-xl font-bold text-base transition duration-300 hover:bg-gray-300">
+                        Sıfırla
+                    </button>
+                </div>
+            </footer>
                 </div>
                 <div class="flex items-start">
                     <svg xmlns="http://www.w3.org/2000/svg" class="tip-icon mt-1 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
@@ -406,6 +426,9 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- YENİ: Prompt oluşturucu sarmalayıcısını kapat (BİRİ SİLİNDİ) -->
     </div>
 
     <script type="module">
@@ -501,6 +524,9 @@
 
         const closeModalBtnX = document.getElementById('close-modal-btn-x');
         const modalContent = document.getElementById('modal-content');
+
+        // YENİ: Sayfa Görünümleri
+        let homepageView, promptCreatorView, startBtn, homeBtn;
 
 
         // Firebase Hazırlıkları
@@ -1088,6 +1114,12 @@ Promptlarınızı genel olarak şu akışta düzenleyin: **[Özne]**, **[Aksiyon
 
         // DOMContentLoaded'da uygulama başlangıcı
         document.addEventListener('DOMContentLoaded', () => {
+            // YENİ: Sayfa Görünümü elementlerini al
+            homepageView = document.getElementById('homepage-view');
+            promptCreatorView = document.getElementById('prompt-creator-view');
+            startBtn = document.getElementById('start-btn');
+            homeBtn = document.getElementById('home-btn');
+
             // Kategori render işlemini hemen yap
             renderAllCategories();
             
@@ -1095,6 +1127,22 @@ Promptlarınızı genel olarak şu akışta düzenleyin: **[Özne]**, **[Aksiyon
             initFirebase(); 
             
             // Event Listener'lar
+            
+            // YENİ: Sayfa Gezinme Listener'ları
+            if (startBtn) {
+                startBtn.addEventListener('click', () => {
+                    if (homepageView) homepageView.style.display = 'none';
+                    if (promptCreatorView) promptCreatorView.style.display = 'block';
+                });
+            }
+
+            if (homeBtn) {
+                homeBtn.addEventListener('click', () => {
+                    if (promptCreatorView) promptCreatorView.style.display = 'none';
+                    if (homepageView) homepageView.style.display = 'block';
+                });
+            }
+            
             generateBtn.addEventListener('click', generatePrompt);
             resetBtn.addEventListener('click', resetAll); 
             
@@ -1123,6 +1171,9 @@ Promptlarınızı genel olarak şu akışta düzenleyin: **[Özne]**, **[Aksiyon
     </script>
 </body>
 </html>
+
+
+
 
 
 
