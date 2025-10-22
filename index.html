@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prompt Sihirbazı (Kompakt ve Canlı)</title>
+    <title>Tek Sayfa Prompt Sihirbazı (Kompakt ve Canlı)</title>
     <!-- Tailwind CSS ve Inter Font -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -286,6 +286,28 @@
             border-color: #059669 !important;
         }
 
+        /* YENİ: Dil Değiştirme Butonları */
+        .lang-btn {
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 0.25rem 0.6rem; /* Padding daraltıldı */
+            border-radius: 6px;
+            color: #6B7280; /* text-gray-500 */
+            background-color: transparent;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+        }
+        .lang-btn:hover {
+            color: #1F2937; /* text-gray-800 */
+            background-color: #F3F4F6; /* bg-gray-100 */
+        }
+        .lang-btn-active {
+            color: var(--color-accent-vibrant);
+            border-color: var(--color-accent-vibrant);
+            background-color: #FFF7ED; /* orange-50 */
+        }
+
+
     </style>
 </head>
 <body class="bg-gray-100">
@@ -297,15 +319,23 @@
         <!-- Arka Plan Karartma Katmanı -->
         <div class="absolute inset-0 bg-black/60 z-0"></div>
         
+        <!-- DİL SEÇİMİ (Ana Sayfa) -->
+        <div class="absolute top-6 right-6 z-20 flex items-center border border-gray-400 rounded-lg p-0.5 space-x-1 bg-white/20 backdrop-blur-sm">
+            <button id="lang-tr-btn-home" class="lang-btn">TR</button>
+            <button id="lang-en-btn-home" class="lang-btn">EN</button>
+        </div>
+        
         <!-- İçerik -->
         <div class="relative z-10 flex flex-col items-center text-center p-8">
-            <h1 class="text-5xl md:text-7xl font-bold text-white mb-4 shadow-lg" style="text-shadow: 2px 2px 8px rgba(0,0,0,0.7);">
+            <!-- Dil seçimi buradan ekranın dışına taşındı -->
+
+            <h1 class="text-5xl md:text-7xl font-bold text-white mb-4 shadow-lg" style="text-shadow: 2px 2px 8px rgba(0,0,0,0.7);" data-translate-key="homepage.title">
                 AI Prompt Stüdyosu
             </h1>
-            <p class="text-xl md:text-2xl text-gray-200 mb-10 max-w-2xl" style="text-shadow: 1px 1px 4px rgba(0,0,0,0.7);">
+            <p class="text-xl md:text-2xl text-gray-200 mb-10 max-w-2xl" style="text-shadow: 1px 1px 4px rgba(0,0,0,0.7);" data-translate-key="homepage.subtitle">
                 Hayalinizdeki görseller için mükemmel prompt'ları yaratın. Başlamak için sihirbazı kullanın.
             </p>
-            <button id="start-btn" class="bg-orange-600 hover:bg-orange-700 text-white font-bold text-lg py-4 px-12 rounded-xl transition duration-300 shadow-2xl transform hover:scale-105 ease-in-out">
+            <button id="start-btn" class="bg-orange-600 hover:bg-orange-700 text-white font-bold text-lg py-4 px-12 rounded-xl transition duration-300 shadow-2xl transform hover:scale-105 ease-in-out" data-translate-key="homepage.button">
                 Sihirbaza Başla
             </button>
         </div>
@@ -320,25 +350,30 @@
             <!-- YENİDEN DÜZENLENMİŞ HEADER -->
             <header class="mb-8 pb-4 border-b border-gray-100 flex justify-between items-center">
                 <div class="flex flex-col">
-                    <h1 class="text-3xl font-light text-gray-800 mb-1">
+                    <h1 class="text-3xl font-light text-gray-800 mb-1" data-translate-key="wizard.title">
                         <span class="text-gray-600 font-bold">PROMPT</span> <span class="text-gray-500">SİHİRBAZI</span>
                     </h1>
-                    <p class="text-sm text-gray-400 mt-2">Görselinizi oluşturmak için tüm anahtar kelimeleri seçin veya kendiniz ekleyin.</p>
+                    <p class="text-sm text-gray-400 mt-2" data-translate-key="wizard.subtitle">Görselinizi oluşturmak için tüm anahtar kelimeleri seçin veya kendiniz ekleyin.</p>
                 </div>
                 
                 <!-- EL KİTABI VE ANA SAYFA BUTONLARI -->
                 <div class="flex items-center space-x-4">
+                    <!-- DİL SEÇİMİ BUTONLARI -->
+                    <div class="flex items-center border border-gray-200 rounded-lg p-0.5 space-x-1 bg-white">
+                        <button id="lang-tr-btn" class="lang-btn lang-btn-active">TR</button>
+                        <button id="lang-en-btn" class="lang-btn">EN</button>
+                    </div>
                     <!-- YENİ: ANA SAYFA BUTONU -->
                     <button id="home-btn" class="flex items-center space-x-2 p-2 rounded-xl text-sm font-semibold text-gray-600 hover:text-gray-800 hover:bg-gray-100 transition duration-200">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                         </svg>
-                        <span>Ana Sayfa</span>
+                        <span data-translate-key="buttons.home">Ana Sayfa</span>
                     </button>
                     
                     <button id="handbook-btn" class="flex items-center space-x-2 p-2 rounded-xl text-sm font-semibold text-gray-600 hover:text-gray-800 hover:bg-gray-100 transition duration-200">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13M3.324 12h17.352M12 21.747L2.248 12 12 2.253 21.752 12 12 21.747zM3 17.069V7.93c0-.361.312-.647.674-.593l17.29 2.502c.362.054.606.376.606.744v8.13c0 .373-.245.698-.61.748l-17.289 2.37c-.365.05-.674-.236-.674-.597zM16 12l2.37-2.37c.184-.184.484-.184.668 0l1.414 1.414c.184.184.184.484 0 .668L16 12zM8 12l-2.37 2.37c.184.184-.484.184-.668 0L3.548 13.956c-.184-.184-.184-.484 0-.668L8 12z" /></svg>
-                        <span>El Kitabı</span>
+                        <span data-translate-key="buttons.handbook">El Kitabı</span>
                     </button>
                 </div>
             </header>
@@ -354,17 +389,19 @@
                 <!-- data-text eklendi ve arka plan/yazı CSS ile ayarlandı -->
                 <button id="generate-btn" 
                         class="w-48 py-2 rounded-xl font-bold text-base transition duration-300"
-                        data-text="Prompt Oluştur">
+                        data-text="Prompt Oluştur"
+                        data-translate-key="buttons.generate"
+                        data-translate-type="data-text">
                     Prompt Oluştur
                 </button>
-                <button id="reset-btn" class="w-24 bg-gray-200 text-gray-700 py-2 rounded-xl font-bold text-base transition duration-300 hover:bg-gray-300">
+                <button id="reset-btn" class="w-24 bg-gray-200 text-gray-700 py-2 rounded-xl font-bold text-base transition duration-300 hover:bg-gray-300" data-translate-key="buttons.reset">
                     Sıfırla
                 </button>
             </div>
 
             <!-- YENİ: İPUÇLARI BÖLÜMÜ (DÜZELTİLDİ) -->
             <section class="tips-box p-5 rounded-xl"> <!-- mt-8 kaldırıldı, butonlar artık üstte boşluk sağlıyor -->
-                <h4 class="tips-title text-lg font-semibold mb-3 flex items-center">
+                <h4 class="tips-title text-lg font-semibold mb-3 flex items-center" data-translate-key="tips.title">
                     <svg xmlns="http://www.w3.org/2000/svg" class="tip-icon text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
                     </svg>
@@ -374,37 +411,37 @@
                     <!-- YENİ EKLENEN İPUCU (Referans görselden) -->
                     <div class="flex items-start">
                         <svg xmlns="http://www.w3.org/2000/svg" class="tip-icon mt-1 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>
-                        <span>Seçenekleri karşılaştırarak en uygun kombinasyonu bulun.</span>
+                        <span data-translate-key="tips.tip1">Seçenekleri karşılaştırarak en uygun kombinasyonu bulun.</span>
                     </div>
                      <!-- YENİ EKLENEN İPUCU (Referans görselden) -->
                     <div class="flex items-start">
                         <svg xmlns="http://www.w3.org/2000/svg" class="tip-icon mt-1 text-yellow-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-12h2v4h-2V8zm0 6h2v2h-2v-2z" /></svg>
-                        <span>Renk ve doku seçimi atmosfere büyük ölçüde etkiler.</span>
+                        <span data-translate-key="tips.tip2">Renk ve doku seçimi atmosfere büyük ölçde etkiler.</span>
                     </div>
                     <!-- MEVCUT İPUCU -->
                     <div class="flex items-start">
                         <svg xmlns="http://www.w3.org/2000/svg" class="tip-icon mt-1 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
-                        <span>Kompozisyon kuralları (örn: 1/3 kuralı) profesyonel görünüm sağlar.</span>
+                        <span data-translate-key="tips.tip3">Kompozisyon kuralları (örn: 1/3 kuralı) profesyonel görünüm sağlar.</span>
                     </div>
                     <!-- MEVCUT İPUCU -->
                     <div class="flex items-start">
                         <svg xmlns="http://www.w3.org/2000/svg" class="tip-icon mt-1 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
-                        <span>Işıklandırma seçimi ('Altın Saat', 'Neon') ruh halini yansıtır.</span>
+                        <span data-translate-key="tips.tip4">Işıklandırma seçimi ('Altın Saat', 'Neon') ruh halini yansıtır.</span>
                     </div>
                     <!-- MEVCUT İPUCU -->
                     <div class="flex items-start">
                         <svg xmlns="http://www.w3.org/2000/svg" class="tip-icon mt-1 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 10V3L4 14h7v7l9-11h-7z" /></svg>
-                        <span>Lens seçimi ('85mm Portre', '35mm Geniş Açı') perspektifi belirler.</span>
+                        <span data-translate-key="tips.tip5">Lens seçimi ('85mm Portre', '35mm Geniş Açı') perspektifi belirler.</span>
                     </div>
                     <!-- YENİ EKLENEN İPUCU -->
                     <div class="flex items-start">
                         <svg xmlns="http://www.w3.org/2000/svg" class="tip-icon mt-1 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" /></svg>
-                        <span>'Serbest Prompt' alanına sanatçı isimleri (örn: Van Gogh) ekleyebilirsiniz.</span>
+                        <span data-translate-key="tips.tip6">'Serbest Prompt' alanına sanatçı isimleri (örn: Van Gogh) ekleyebilirsiniz.</span>
                     </div>
                     <!-- MEVCUT İPUCU (GÜNCELLENDİ) -->
                     <div class="flex items-start">
                         <svg xmlns="http://www.w3.org/2000/svg" class="tip-icon mt-1 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13M3.324 12h17.352M12 21.747L2.248 12 12 2.253 21.752 12 12 21.747z" /></svg>
-                        <span>Tüm kategorilerin detaylı açıklaması için 'El Kitabı'na bakın.</span>
+                        <span data-translate-key="tips.tip7">Tüm kategorilerin detaylı açıklaması için 'El Kitabı'na bakın.</span>
                     </div>
                 </div>
             </section>
@@ -419,20 +456,20 @@
         <!-- MODAL 1: PROMPT SONUCU (TEK KUTU) -->
         <div id="modal" class="fixed inset-0 bg-gray-900 bg-opacity-80 flex items-center justify-center p-4 transition-opacity duration-300 opacity-0 pointer-events-none z-50">
             <div id="modal-content" class="bg-white rounded-xl p-6 w-full max-w-2xl transform transition-all duration-300 scale-95">
-                <h3 class="text-2xl font-bold text-gray-800 mb-3 flex justify-between items-center">
+                <h3 class="text-2xl font-bold text-gray-800 mb-3 flex justify-between items-center" data-translate-key="modal.title">
                     Prompt Hazır!
                     <button id="close-modal-btn-x" class="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
                 </h3>
-                <p class="text-xs text-gray-500 mb-3">Oluşturulan prompt'u aşağıda görebilirsiniz.</p>
+                <p class="text-xs text-gray-500 mb-3" data-translate-key="modal.subtitle">Oluşturulan prompt'u aşağıda görebilirsiniz.</p>
                 
                 <!-- SADECE TÜRKÇE PROMPT KUTUSU -->
                 <div class="flex flex-col">
                     <label class="text-sm font-semibold text-gray-700 mb-2 flex items-center justify-between">
-                        Oluşturulan Prompt
+                        <span data-translate-key="modal.label">Oluşturulan Prompt (İngilizce)</span>
                         <!-- KOPYALA BUTONU: Yeni stil ve ID'ye referans veren JS -->
-                        <button id="copy-final-btn" class="text-xs font-medium transition duration-150">
+                        <button id="copy-final-btn" class="text-xs font-medium transition duration-150" data-translate-key="modal.copy">
                             Kopyala
                         </button>
                     </label>
@@ -448,7 +485,7 @@
         <!-- MODAL 2: EL KİTABI MODALI -->
         <div id="handbook-modal" class="fixed inset-0 bg-gray-900 bg-opacity-80 flex items-center justify-center p-4 transition-opacity duration-300 opacity-0 pointer-events-none z-50">
             <div class="bg-white rounded-xl p-6 w-full max-w-3xl transform transition-all duration-300 scale-95">
-                <h3 class="text-3xl font-bold text-gray-800 mb-4 flex justify-between items-center">
+                <h3 class="text-3xl font-bold text-gray-800 mb-4 flex justify-between items-center" data-translate-key="handbookModal.title">
                     AI Prompt Oluşturma El Kitabı
                     <button id="close-handbook-btn" class="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
@@ -466,10 +503,10 @@
 
     <!-- YENİ EKLENEN FOOTER (ALT BİLGİ) -->
     <footer class="w-full text-center p-6 mt-10">
-        <p class="text-sm text-gray-500">
+        <p class="text-sm text-gray-500" data-translate-key="footer.copyright">
             © 2025 PromptStudio. Tüm hakları saklıdır. | Powered by Egitselblog
         </p>
-        <p class="text-sm text-gray-500 mt-1">
+        <p class="text-sm text-gray-500 mt-1" data-translate-key="footer.email">
             email: egitselblog@gmail.com
         </p>
     </footer>
@@ -479,6 +516,112 @@
     <script type="module">
         
         // --- API İLE İLGİLİ KODLAR VE DEĞİŞKENLER TAMAMEN KALDIRILDI ---
+
+        // YENİ: Dil durumu ve çeviri metinleri
+        let currentLang = 'tr'; 
+
+        const translations = {
+            tr: {
+                homepage: {
+                    title: "AI Prompt Stüdyosu",
+                    subtitle: "Hayalinizdeki görseller için mükemmel prompt'ları yaratın. Başlamak için sihirbazı kullanın.",
+                    button: "Sihirbaza Başla"
+                },
+                wizard: {
+                    title: '<span class="text-gray-600 font-bold">PROMPT</span> <span class="text-gray-500">SİHİRBAZI</span>',
+                    subtitle: "Görselinizi oluşturmak için tüm anahtar kelimeleri seçin veya kendiniz ekleyin."
+                },
+                buttons: {
+                    home: "Ana Sayfa",
+                    handbook: "El Kitabı",
+                    generate: "Prompt Oluştur",
+                    reset: "Sıfırla",
+                    customWrite: "Özel Yaz",
+                    cancel: "İptal Et",
+                    customPlaceholder: "Özel değerinizi buraya yazın..."
+                },
+                tips: {
+                    title: "Profesyonel İpuçları",
+                    tip1: "Seçenekleri karşılaştırarak en uygun kombinasyonu bulun.",
+                    tip2: "Renk ve doku seçimi atmosfere büyük ölçüde etkiler.",
+                    tip3: "Kompozisyon kuralları (örn: 1/3 kuralı) profesyonel görünüm sağlar.",
+                    tip4: "Işıklandırma seçimi ('Altın Saat', 'Neon') ruh halini yansıtır.",
+                    tip5: "Lens seçimi ('85mm Portre', '35mm Geniş Açı') perspektifi belirler.",
+                    tip6: "'Serbest Prompt' alanına sanatçı isimleri (örn: Van Gogh) ekleyebilirsiniz.",
+                    tip7: "Tüm kategorilerin detaylı açıklaması için 'El Kitabı'na bakın."
+                },
+                modal: {
+                    title: "Prompt Hazır!",
+                    subtitle: "Oluşturulan prompt'u (İngilizce) aşağıda görebilirsiniz. Bu prompt, AI modelleri için optimize edilmiştir.",
+                    label: "Oluşturulan Prompt (İngilizce)",
+                    copy: "Kopyala",
+                    copied: "Kopyalandı!"
+                },
+                handbookModal: {
+                    title: "AI Prompt Oluşturma El Kitabı"
+                },
+                messages: {
+                    reset: "Tüm seçimler sıfırlandı.",
+                    copySuccess: "Prompt panoya kopyalandı!",
+                    copyFail: "Kopyalama başarısız oldu.",
+                    noSelection: "Lütfen en az bir kategori seçimi yapın."
+                },
+                footer: {
+                    copyright: "© 2025 PromptStudio. Tüm hakları saklıdır. | Powered by Egitselblog",
+                    email: "email: egitselblog@gmail.com"
+                }
+            },
+            en: {
+                homepage: {
+                    title: "AI Prompt Studio",
+                    subtitle: "Create the perfect prompts for your dream images. Use the wizard to get started.",
+                    button: "Start Wizard"
+                },
+                wizard: {
+                    title: '<span class="text-gray-600 font-bold">PROMPT</span> <span class="text-gray-500">WIZARD</span>',
+                    subtitle: "Select all the keywords to generate your image, or add your own."
+                },
+                buttons: {
+                    home: "Home",
+                    handbook: "Handbook",
+                    generate: "Generate Prompt",
+                    reset: "Reset",
+                    customWrite: "Custom",
+                    cancel: "Cancel",
+                    customPlaceholder: "Enter your custom value here..."
+                },
+                tips: {
+                    title: "Professional Tips",
+                    tip1: "Compare options to find the best combination.",
+                    tip2: "Color and texture selection greatly affects the atmosphere.",
+                    tip3: "Composition rules (e.g., rule of thirds) provide a professional look.",
+                    tip4: "Lighting choice ('Golden Hour', 'Neon') reflects the mood.",
+                    tip5: "Lens selection ('85mm Portrait', '35mm Wide') determines the perspective.",
+                    tip6: "You can add artist names (e.g., Van Gogh) in the 'Free Prompt' area.",
+                    tip7: "See the 'Handbook' for detailed explanations of all categories."
+                },
+                modal: {
+                    title: "Prompt Ready!",
+                    subtitle: "You can see the generated prompt (in English) below. This prompt is optimized for AI models.",
+                    label: "Generated Prompt (English)",
+                    copy: "Copy",
+                    copied: "Copied!"
+                },
+                handbookModal: {
+                    title: "AI Prompt Generation Handbook"
+                },
+                messages: {
+                    reset: "All selections have been reset.",
+                    copySuccess: "Prompt copied to clipboard!",
+                    copyFail: "Copy failed.",
+                    noSelection: "Please make at least one selection."
+                },
+                footer: {
+                    copyright: "© 2025 PromptStudio. All rights reserved. | Powered by Egitselblog",
+                    email: "email: egitselblog@gmail.com"
+                }
+            }
+        };
         
         // KATEGORİ VERİLERİ ve ICON SVG FONKSİYONU
         const getIconSvg = (name) => {
@@ -504,46 +647,202 @@
 
         const categoriesData = [
             // 0. REFERANS GÖRSEL (YENİ EKLENDİ)
-            { id: 'referans_gorsel', title: '0. Referans Görsel (İsteğe bağlı)', isFreeText: true, instruction: 'referans görseliniz varsa burada belirtiniz. örn: Gönderilen fotoğrafı kimlik referansı olarak kullanın.Fotoğraftaki kişinin yüzünü ve kimliğinin tamamını koruyun, kişisel görünümü değiştirmeyin.' },
+            { 
+                id: 'referans_gorsel', 
+                title: { tr: '0. Referans Görsel (İsteğe bağlı)', en: '0. Reference Image (Optional)' }, 
+                isFreeText: true, 
+                instruction: { 
+                    tr: 'referans görseliniz varsa burada belirtiniz. örn: Gönderilen fotoğrafı kimlik referansı olarak kullanın.Fotoğraftaki kişinin yüzünü ve kimliğinin tamamını koruyun, kişisel görünümü değiştirmeyin.', 
+                    en: 'Specify your reference image here. e.g., Use the uploaded photo as an identity reference. Preserve the full face and identity of the person in the photo, do not change the personal appearance.' 
+                } 
+            },
 
             // 1. ANA KONU/ÖZNE (Main Subject/Entity)
-            { id: 'ana_konu', title: '1. Ana Konu/Özne (Main Subject/Entity)', options: ['Genç kadın', 'Yaşlı adam', 'Çocuk', 'Kedi', 'Ejder', 'Köpek', 'Robot', 'Melek', 'Savaşçı', 'Prenses', 'Büyücü', 'Astronot', 'Şef', 'Doktor', 'Sanatçı', 'Müzisyen', 'Aile', 'Çift', 'Arkadaşlar', 'Araba', 'Motosiklet', 'Bina', 'Ev', 'Saray', 'Kale', 'Köprü', 'Gemi', 'Uçak', 'Manzara', 'Portre'], isMulti: false },
+            { 
+                id: 'ana_konu', 
+                title: { tr: '1. Ana Konu/Özne (Main Subject/Entity)', en: '1. Main Subject/Entity' }, 
+                options: [
+                    { tr: 'Genç kadın', en: 'Young woman' }, { tr: 'Yaşlı adam', en: 'Old man' }, { tr: 'Çocuk', en: 'Child' }, { tr: 'Kedi', en: 'Cat' }, { tr: 'Ejder', en: 'Dragon' }, { tr: 'Köpek', en: 'Dog' }, 
+                    { tr: 'Robot', en: 'Robot' }, { tr: 'Melek', en: 'Angel' }, { tr: 'Savaşçı', en: 'Warrior' }, { tr: 'Prenses', en: 'Princess' }, { tr: 'Büyücü', en: 'Wizard' }, { tr: 'Astronot', en: 'Astronaut' }, 
+                    { tr: 'Şef', en: 'Chef' }, { tr: 'Doktor', en: 'Doctor' }, { tr: 'Sanatçı', en: 'Artist' }, { tr: 'Müzisyen', en: 'Musician' }, { tr: 'Aile', en: 'Family' }, { tr: 'Çift', en: 'Couple' }, 
+                    { tr: 'Arkadaşlar', en: 'Friends' }, { tr: 'Araba', en: 'Car' }, { tr: 'Motosiklet', en: 'Motorcycle' }, { tr: 'Bina', en: 'Building' }, { tr: 'Ev', en: 'House' }, { tr: 'Saray', en: 'Palace' }, 
+                    { tr: 'Kale', en: 'Castle' }, { tr: 'Köprü', en: 'Bridge' }, { tr: 'Gemi', en: 'Ship' }, { tr: 'Uçak', en: 'Airplane' }, { tr: 'Manzara', en: 'Landscape' }, { tr: 'Portre', en: 'Portrait' }
+                ], 
+                isMulti: false 
+            },
             
             // 2. AKSİYON/DUYGU (Action/Emotion)
-            { id: 'aksiyon_duygu', title: '2. Aksiyon/Duygu (Action/Emotion)', options: ['koşuyor', 'dans ediyor', 'gülümsüyor', 'ağlıyor', 'düşünüyor', 'savaşıyor', 'uyuyor', 'yürüyor', 'oturuyor', 'çalışıyor', 'okuyor', 'yazıyor', 'çiziyor', 'şarkı söylüyor', 'uyuyor', 'yemek yiyor', 'konuşuyor', 'dinleniyor', 'oyun oynuyor', 'spor yapıyor', 'meditasyon yapıyor', 'yoga yapıyor', 'bisiklet sürüyor', 'yüzüyor', 'müzik çalıyor', 'resim yapıyor', 'fotoğraf çekiyor', 'araba kullanıyor'], isMulti: false },
+            { 
+                id: 'aksiyon_duygu', 
+                title: { tr: '2. Aksiyon/Duygu (Action/Emotion)', en: '2. Action/Emotion' }, 
+                options: [
+                    { tr: 'koşuyor', en: 'running' }, { tr: 'dans ediyor', en: 'dancing' }, { tr: 'gülümsüyor', en: 'smiling' }, { tr: 'ağlıyor', en: 'crying' }, { tr: 'düşünüyor', en: 'thinking' }, 
+                    { tr: 'savaşıyor', en: 'fighting' }, { tr: 'uyuyor', en: 'sleeping' }, { tr: 'yürüyor', en: 'walking' }, { tr: 'oturuyor', en: 'sitting' }, { tr: 'çalışıyor', en: 'working' }, 
+                    { tr: 'okuyor', en: 'reading' }, { tr: 'yazıyor', en: 'writing' }, { tr: 'çiziyor', en: 'drawing' }, { tr: 'şarkı söylüyor', en: 'singing' }, { tr: 'yemek yiyor', en: 'eating' }, 
+                    { tr: 'konuşuyor', en: 'talking' }, { tr: 'dinleniyor', en: 'resting' }, { tr: 'oyun oynuyor', en: 'playing game' }, { tr: 'spor yapıyor', en: 'doing sport' }, { tr: 'meditasyon yapıyor', en: 'meditating' }, 
+                    { tr: 'yoga yapıyor', en: 'doing yoga' }, { tr: 'bisiklet sürüyor', en: 'riding bike' }, { tr: 'yüzüyor', en: 'swimming' }, { tr: 'müzik çalıyor', en: 'playing music' }, { tr: 'resim yapıyor', en: 'painting' }, 
+                    { tr: 'fotoğraf çekiyor', en: 'taking photo' }, { tr: 'araba kullanıyor', en: 'driving car' }
+                ], 
+                isMulti: false 
+            },
             
             // 3. MEKAN/ARKA PLAN (Location/Background)
-            { id: 'mekan', title: '3. Mekan/Arka Plan (Location/Background)', options: ['orman', 'şehir', 'plaj', 'dağ', 'uzay', 'saray', 'ev', 'okul', 'hastane', 'kafe', 'park', 'müze', 'kütüphane', 'stadyum', 'tiyatro', 'çöl', 'ada', 'köprü', 'tren istasyonu', 'havaalanı', 'alışveriş merkezi', 'restoran', 'sinema', 'kilise', 'cami', 'bahçe', 'çiftlik', 'deniz altı', 'mağara', 'şelale', 'göl', 'nehir', 'kasaba', 'köy'], isMulti: false },
+            { 
+                id: 'mekan', 
+                title: { tr: '3. Mekan/Arka Plan (Location/Background)', en: '3. Location/Background' }, 
+                options: [
+                    { tr: 'orman', en: 'forest' }, { tr: 'şehir', en: 'city' }, { tr: 'plaj', en: 'beach' }, { tr: 'dağ', en: 'mountain' }, { tr: 'uzay', en: 'space' }, { tr: 'saray', en: 'palace' }, 
+                    { tr: 'ev', en: 'house' }, { tr: 'okul', en: 'school' }, { tr: 'hastane', en: 'hospital' }, { tr: 'kafe', en: 'cafe' }, { tr: 'park', en: 'park' }, { tr: 'müze', en: 'museum' }, 
+                    { tr: 'kütüphane', en: 'library' }, { tr: 'stadyum', en: 'stadium' }, { tr: 'tiyatro', en: 'theater' }, { tr: 'çöl', en: 'desert' }, { tr: 'ada', en: 'island' }, { tr: 'köprü', en: 'bridge' }, 
+                    { tr: 'tren istasyonu', en: 'train station' }, { tr: 'havaalanı', en: 'airport' }, { tr: 'alışveriş merkezi', en: 'mall' }, { tr: 'restoran', en: 'restaurant' }, { tr: 'sinema', en: 'cinema' }, 
+                    { tr: 'kilise', en: 'church' }, { tr: 'cami', en: 'mosque' }, { tr: 'bahçe', en: 'garden' }, { tr: 'çiftlik', en: 'farm' }, { tr: 'deniz altı', en: 'underwater' }, { tr: 'mağara', en: 'cave' }, 
+                    { tr: 'şelale', en: 'waterfall' }, { tr: 'göl', en: 'lake' }, { tr: 'nehir', en: 'river' }, { tr: 'kasaba', en: 'town' }, { tr: 'köy', en: 'village' }
+                ], 
+                isMulti: false 
+            },
 
             // 4. SANAT STİLİ (Art Style)
-            { id: 'sanat_stili', title: '4. Sanat Stili (Art Style)', options: ['realistik', 'hiper realistik', 'fotoğraf gerçekçiliği', 'anime', 'manga', 'çizgi roman', 'sulu boya', 'yağlı boya', 'karakalem', 'dijital sanat', 'minimalist', 'sürrealist', 'empresyonist', 'pop art', 'art nouveau', 'barok', 'rönesans', 'modern', 'steampunk', 'cyberpunk', 'vintage', 'retro', 'klasik', 'abstract', 'pixel art', 'sketch', 'sinematik', 'film noir', 'fantastik', 'bilim kurgu'], isMulti: false },
+            { 
+                id: 'sanat_stili', 
+                title: { tr: '4. Sanat Stili (Art Style)', en: '4. Art Style' }, 
+                options: [
+                    { tr: 'realistik', en: 'realistic' }, { tr: 'hiper realistik', en: 'hyper realistic' }, { tr: 'fotoğraf gerçekçiliği', en: 'photorealistic' }, { tr: 'anime', en: 'anime' }, { tr: 'manga', en: 'manga' }, 
+                    { tr: 'çizgi roman', en: 'comic book' }, { tr: 'sulu boya', en: 'watercolor' }, { tr: 'yağlı boya', en: 'oil painting' }, { tr: 'karakalem', en: 'charcoal sketch' }, { tr: 'dijital sanat', en: 'digital art' }, 
+                    { tr: 'minimalist', en: 'minimalist' }, { tr: 'sürrealist', en: 'surrealist' }, { tr: 'empresyonist', en: 'impressionist' }, { tr: 'pop art', en: 'pop art' }, { tr: 'art nouveau', en: 'art nouveau' }, 
+                    { tr: 'barok', en: 'baroque' }, { tr: 'rönesans', en: 'renaissance' }, { tr: 'modern', en: 'modern' }, { tr: 'steampunk', en: 'steampunk' }, { tr: 'cyberpunk', en: 'cyberpunk' }, 
+                    { tr: 'vintage', en: 'vintage' }, { tr: 'retro', en: 'retro' }, { tr: 'klasik', en: 'classic' }, { tr: 'abstract', en: 'abstract' }, { tr: 'pixel art', en: 'pixel art' }, 
+                    { tr: 'sketch', en: 'sketch' }, { tr: 'sinematik', en: 'cinematic' }, { tr: 'film noir', en: 'film noir' }, { tr: 'fantastik', en: 'fantasy' }, { tr: 'bilim kurgu', en: 'sci-fi' }
+                ], 
+                isMulti: false 
+            },
             
             // 5. KAMERA AÇISI/ÇEKİM PLANI (Camera Angle/Shot Plan)
-            { id: 'kamera_acisi', title: '5. Kamera Açısı/Çekim Planı (Camera Angle/Shot Plan)', options: ['yakın çekim', 'orta çekim', 'uzak çekim', 'extreme yakın çekim', 'kuş bakışı', 'solucan bakışı', 'alçak açı', 'yüksek açı', 'göz hizası', 'profil çekim', 'ön çekim', 'yan çekim', '3/4 açı', 'panoramik', 'geniş açı', 'sinematik çekim', 'drone çekim', 'havadan çekim', 'el kamerası', 'tracking shot', 'dolly shot', 'over shoulder', 'point of view', 'establishing shot'], isMulti: false },
+            { 
+                id: 'kamera_acisi', 
+                title: { tr: '5. Kamera Açısı/ÇEKİM PLANI (Camera Angle/Shot Plan)', en: '5. Camera Angle/Shot Plan' }, 
+                options: [
+                    { tr: 'yakın çekim', en: 'close-up shot' }, { tr: 'orta çekim', en: 'medium shot' }, { tr: 'uzak çekim', en: 'long shot' }, { tr: 'extreme yakın çekim', en: 'extreme close-up' }, 
+                    { tr: 'kuş bakışı', en: 'bird\'s-eye view' }, { tr: 'solucan bakışı', en: 'worm\'s-eye view' }, { tr: 'alçak açı', en: 'low angle' }, { tr: 'yüksek açı', en: 'high angle' }, 
+                    { tr: 'göz hizası', en: 'eye level' }, { tr: 'profil çekim', en: 'profile shot' }, { tr: 'ön çekim', en: 'front shot' }, { tr: 'yan çekim', en: 'side shot' }, { tr: '3/4 açı', en: '3/4 angle' }, 
+                    { tr: 'panoramik', en: 'panoramic' }, { tr: 'geniş açı', en: 'wide angle' }, { tr: 'sinematik çekim', en: 'cinematic shot' }, { tr: 'drone çekim', en: 'drone shot' }, { tr: 'havadan çekim', en: 'aerial view' }, 
+                    { tr: 'el kamerası', en: 'handheld camera' }, { tr: 'tracking shot', en: 'tracking shot' }, { tr: 'dolly shot', en: 'dolly shot' }, { tr: 'over shoulder', en: 'over shoulder shot' }, 
+                    { tr: 'point of view', en: 'point of view (POV)' }, { tr: 'establishing shot', en: 'establishing shot' }
+                ], 
+                isMulti: false 
+            },
             
             // 6. LENS SEÇİMİ (Lens Selection)
-            { id: 'lens_secimi', title: '6. Lens Seçimi (Lens Selection)', options: ['14mm ultra geniş açı', '24mm geniş açı', '35mm sokak fotoğrafçılığı', '50mm normal', '85mm portre', '135mm orta telefoto', '200mm telefoto', '300mm süper telefoto', 'makro lens 60mm', 'makro lens 100mm', 'balık gözü 15mm', 'tilt-shift 24mm', 'anamorfik 35mm', 'anamorfik 50mm', 'vintage lens', 'cinema lens', 'prime lens', 'zoom lens', 'telephoto zoom', 'wide zoom', 'portrait lens', 'landscape lens', 'wildlife lens', 'sports lens'], isMulti: false },
+            { 
+                id: 'lens_secimi', 
+                title: { tr: '6. Lens Seçimi (Lens Selection)', en: '6. Lens Selection' }, 
+                options: [
+                    { tr: '14mm ultra geniş açı', en: '14mm ultra-wide angle' }, { tr: '24mm geniş açı', en: '24mm wide angle' }, { tr: '35mm sokak fotoğrafçılığı', en: '35mm street photography' }, { tr: '50mm normal', en: '50mm normal lens' }, 
+                    { tr: '85mm portre', en: '85mm portrait lens' }, { tr: '135mm orta telefoto', en: '135mm medium telephoto' }, { tr: '200mm telefoto', en: '200mm telephoto' }, { tr: '300mm süper telefoto', en: '300mm super telephoto' }, 
+                    { tr: 'makro lens 60mm', en: '60mm macro lens' }, { tr: 'makro lens 100mm', en: '100mm macro lens' }, { tr: 'balık gözü 15mm', en: '15mm fisheye lens' }, { tr: 'tilt-shift 24mm', en: '24mm tilt-shift lens' }, 
+                    { tr: 'anamorfik 35mm', en: '35mm anamorphic' }, { tr: 'anamorfik 50mm', en: '50mm anamorphic' }, { tr: 'vintage lens', en: 'vintage lens' }, { tr: 'cinema lens', en: 'cinema lens' }, 
+                    { tr: 'prime lens', en: 'prime lens' }, { tr: 'zoom lens', en: 'zoom lens' }, { tr: 'telephoto zoom', en: 'telephoto zoom' }, { tr: 'wide zoom', en: 'wide zoom' }, { tr: 'portrait lens', en: 'portrait lens' }, 
+                    { tr: 'landscape lens', en: 'landscape lens' }, { tr: 'wildlife lens', en: 'wildlife lens' }, { tr: 'sports lens', en: 'sports lens' }
+                ], 
+                isMulti: false 
+            },
             
             // 7. IŞIKLANDIRMA (Lighting)
-            { id: 'isiklandirma', title: '7. Işıklandırma (Lighting)', options: ['doğal ışık', 'altın saat', 'mavi saat', 'gün doğumu', 'gün batımı', 'öğle güneşi', 'bulutlu gün', 'neon ışık', 'LED ışık', 'mum ışığı', 'şömine ışığı', 'ay ışığı', 'studio ışık', 'softbox ışık', 'ring light', 'dramatik ışık', 'yumuşak ışık', 'volumetrik ışık', 'sinematik ışık', 'lens flare', 'god rays', 'renkli ışık', 'ambient ışık', 'soğuk ışık', 'sıcak ışık'], isMulti: false },
+            { 
+                id: 'isiklandirma', 
+                title: { tr: '7. Işıklandırma (Lighting)', en: '7. Lighting' }, 
+                options: [
+                    { tr: 'doğal ışık', en: 'natural light' }, { tr: 'altın saat', en: 'golden hour' }, { tr: 'mavi saat', en: 'blue hour' }, { tr: 'gün doğumu', en: 'sunrise' }, { tr: 'gün batımı', en: 'sunset' }, 
+                    { tr: 'öğle güneşi', en: 'midday sun' }, { tr: 'bulutlu gün', en: 'cloudy day' }, { tr: 'neon ışık', en: 'neon light' }, { tr: 'LED ışık', en: 'LED light' }, { tr: 'mum ışığı', en: 'candlelight' }, 
+                    { tr: 'şömine ışığı', en: 'fireplace light' }, { tr: 'ay ışığı', en: 'moonlight' }, { tr: 'studio ışık', en: 'studio light' }, { tr: 'softbox ışık', en: 'softbox light' }, { tr: 'ring light', en: 'ring light' }, 
+                    { tr: 'dramatik ışık', en: 'dramatic lighting' }, { tr: 'yumuşak ışık', en: 'soft lighting' }, { tr: 'volumetrik ışık', en: 'volumetric lighting' }, { tr: 'sinematik ışık', en: 'cinematic lighting' }, 
+                    { tr: 'lens flare', en: 'lens flare' }, { tr: 'god rays', en: 'god rays' }, { tr: 'renkli ışık', en: 'colored light' }, { tr: 'ambient ışık', en: 'ambient light' }, { tr: 'soğuk ışık', en: 'cool light' }, 
+                    { tr: 'sıcak ışık', en: 'warm light' }
+                ], 
+                isMulti: false 
+            },
             
             // 8. RUH HALİ/ATMOSFER (Mood/Atmosphere)
-            { id: 'ruh_hali', title: '8. Ruh Hali/Atmosfer (Mood/Atmosphere)', options: ['mutlu', 'hüzünlü', 'romantik', 'dramatik', 'gizemli', 'korkunç', 'heyecan verici', 'sakin', 'huzurlu', 'enerjik', 'melankolik', 'nostaljik', 'umutlu', 'karanlık', 'aydınlık', 'sıcak', 'soğuk', 'samimi', 'yalnız', 'sessiz', 'dinamik', 'çılgın', 'agresif', 'renkli', 'canlı', 'mat', 'parlak'], isMulti: false },
+            { 
+                id: 'ruh_hali', 
+                title: { tr: '8. Ruh Hali/Atmosfer (Mood/Atmosphere)', en: '8. Mood/Atmosphere' }, 
+                options: [
+                    { tr: 'mutlu', en: 'happy' }, { tr: 'hüzünlü', en: 'sad' }, { tr: 'romantik', en: 'romantic' }, { tr: 'dramatik', en: 'dramatic' }, { tr: 'gizemli', en: 'mysterious' }, { tr: 'korkunç', en: 'scary' }, 
+                    { tr: 'heyecan verici', en: 'exciting' }, { tr: 'sakin', en: 'calm' }, { tr: 'huzurlu', en: 'peaceful' }, { tr: 'enerjik', en: 'energetic' }, { tr: 'melankolik', en: 'melancholic' }, 
+                    { tr: 'nostaljik', en: 'nostalgic' }, { tr: 'umutlu', en: 'hopeful' }, { tr: 'karanlık', en: 'dark' }, { tr: 'aydınlık', en: 'bright' }, { tr: 'sıcak', en: 'warm' }, { tr: 'soğuk', en: 'cold' }, 
+                    { tr: 'samimi', en: 'intimate' }, { tr: 'yalnız', en: 'lonely' }, { tr: 'sessiz', en: 'silent' }, { tr: 'dinamik', en: 'dynamic' }, { tr: 'çılgın', en: 'crazy' }, { tr: 'agresif', en: 'aggressive' }, 
+                    { tr: 'renkli', en: 'colorful' }, { tr: 'canlı', en: 'vibrant' }, { tr: 'mat', en: 'matte' }, { tr: 'parlak', en: 'glossy' }
+                ], 
+                isMulti: false 
+            },
             
             // 9. KOMPOZİSYON (Composition)
-            { id: 'kompozisyon', title: '9. Kompozisyon (Composition)', options: ['üçte bir kuralı', 'merkezi kompozisyon', 'simetrik', 'asimetrik', 'diagonal', 'spiral', 'altın oran', 'çerçeve içinde çerçeve', 'derinlik hissi', 'perspektif', 'leading lines', 'pattern', 'denge', 'negatif alan', 'minimalist kompozisyon', 'geometrik', 'organik', 'horizontal', 'vertical', 'triangular', 'circular'], isMulti: false },
+            { 
+                id: 'kompozisyon', 
+                title: { tr: '9. Kompozisyon (Composition)', en: '9. Composition' }, 
+                options: [
+                    { tr: 'üçte bir kuralı', en: 'rule of thirds' }, { tr: 'merkezi kompozisyon', en: 'centered composition' }, { tr: 'simetrik', en: 'symmetrical' }, { tr: 'asimetrik', en: 'asymmetrical' }, 
+                    { tr: 'diagonal', en: 'diagonal' }, { tr: 'spiral', en: 'spiral' }, { tr: 'altın oran', en: 'golden ratio' }, { tr: 'çerçeve içinde çerçeve', en: 'frame within a frame' }, 
+                    { tr: 'derinlik hissi', en: 'depth of field' }, { tr: 'perspektif', en: 'perspective' }, { tr: 'leading lines', en: 'leading lines' }, { tr: 'pattern', en: 'pattern' }, { tr: 'denge', en: 'balance' }, 
+                    { tr: 'negatif alan', en: 'negative space' }, { tr: 'minimalist kompozisyon', en: 'minimalist composition' }, { tr: 'geometrik', en: 'geometric' }, { tr: 'organik', en: 'organic' }, 
+                    { tr: 'horizontal', en: 'horizontal' }, { tr: 'vertical', en: 'vertical' }, { tr: 'triangular', en: 'triangular' }, { tr: 'circular', en: 'circular' }
+                ], 
+                isMulti: false 
+            },
             
             // 10. RENK PALETİ (Color Palette)
-            { id: 'renk_paleti', title: '10. Renk Paleti (Color Palette)', options: ['monokrom', 'siyah beyaz', 'sepia', 'renkli', 'pastel renkler', 'canlı renkler', 'mat renkler', 'neon renkler', 'warm tones', 'cool tones', 'kırmızı dominant', 'mavi dominant', 'yeşil dominant', 'sarı dominant', 'mor dominant', 'turuncu dominant', 'gri tonları', 'metalik renkler', 'altın tonları', 'gümüş tonları', 'vintage color grading', 'modern color grading', 'film look', 'digital look'], isMulti: false },
+            { 
+                id: 'renk_paleti', 
+                title: { tr: '10. Renk Paleti (Color Palette)', en: '10. Color Palette' }, 
+                options: [
+                    { tr: 'monokrom', en: 'monochrome' }, { tr: 'siyah beyaz', en: 'black and white' }, { tr: 'sepia', en: 'sepia' }, { tr: 'renkli', en: 'colorful' }, { tr: 'pastel renkler', en: 'pastel colors' }, 
+                    { tr: 'canlı renkler', en: 'vibrant colors' }, { tr: 'mat renkler', en: 'matte colors' }, { tr: 'neon renkler', en: 'neon colors' }, { tr: 'warm tones', en: 'warm tones' }, 
+                    { tr: 'cool tones', en: 'cool tones' }, { tr: 'kırmızı dominant', en: 'red dominant' }, { tr: 'mavi dominant', en: 'blue dominant' }, { tr: 'yeşil dominant', en: 'green dominant' }, 
+                    { tr: 'sarı dominant', en: 'yellow dominant' }, { tr: 'mor dominant', en: 'purple dominant' }, { tr: 'turuncu dominant', en: 'orange dominant' }, { tr: 'gri tonları', en: 'grayscale' }, 
+                    { tr: 'metalik renkler', en: 'metallic colors' }, { tr: 'altın tonları', en: 'gold tones' }, { tr: 'gümüş tonları', en: 'silver tones' }, { tr: 'vintage color grading', en: 'vintage color grading' }, 
+                    { tr: 'modern color grading', en: 'modern color grading' }, { tr: 'film look', en: 'film look' }, { tr: 'digital look', en: 'digital look' }
+                ], 
+                isMulti: false 
+            },
             
             // 11. DOKU/MATERYAL (Texture/Material)
-            { id: 'doku', title: '11. Doku/Materyal (Texture/Material)', options: ['pürüzsüz', 'pürüzlü', 'yumuşak', 'sert', 'parlak', 'mat', 'metalik', 'ahşap', 'taş', 'mermer', 'cam', 'plastik', 'kumaş', 'deri', 'kağıt', 'beton', 'tuğla', 'çelik', 'altın', 'gümüş', 'su', 'buz', 'kar', 'kum', 'toprak', 'çim', 'yaprak', 'tüy', 'vintage texture', 'grunge texture'], isMulti: false },
+            { 
+                id: 'doku', 
+                title: { tr: '11. Doku/Materyal (Texture/Material)', en: '11. Texture/Material' }, 
+                options: [
+                    { tr: 'pürüzsüz', en: 'smooth' }, { tr: 'pürüzlü', en: 'rough' }, { tr: 'yumuşak', en: 'soft' }, { tr: 'sert', en: 'hard' }, { tr: 'parlak', en: 'glossy' }, { tr: 'mat', en: 'matte' }, 
+                    { tr: 'metalik', en: 'metallic' }, { tr: 'ahşap', en: 'wood' }, { tr: 'taş', en: 'stone' }, { tr: 'mermer', en: 'marble' }, { tr: 'cam', en: 'glass' }, { tr: 'plastik', en: 'plastic' }, 
+                    { tr: 'kumaş', en: 'fabric' }, { tr: 'deri', en: 'leather' }, { tr: 'kağıt', en: 'paper' }, { tr: 'beton', en: 'concrete' }, { tr: 'tuğla', en: 'brick' }, { tr: 'çelik', en: 'steel' }, 
+                    { tr: 'altın', en: 'gold' }, { tr: 'gümüş', en: 'silver' }, { tr: 'su', en: 'water' }, { tr: 'buz', en: 'ice' }, { tr: 'kar', en: 'snow' }, { tr: 'kum', en: 'sand' }, { tr: 'toprak', en: 'earth' }, 
+                    { tr: 'çim', en: 'grass' }, { tr: 'yaprak', en: 'leaf' }, { tr: 'tüy', en: 'feather' }, { tr: 'vintage texture', en: 'vintage texture' }, { tr: 'grunge texture', en: 'grunge texture' }
+                ], 
+                isMulti: false 
+            },
             
             // 12. KALİTE/ÇÖZÜNÜRLÜK (Quality/Resolution)
-            { id: 'kalite', title: '12. Kalite/Çözünürlük (Quality/Resolution)', options: ['4K', '8K', 'HD', 'Full HD', 'Ultra HD', 'Yüksek detay', 'Ultra yüksek detay', 'Profesyonel kalite', 'Sinematik kalite', 'Fotoğraf kalitesi', 'Ultra gerçekçi', 'Yüksek çözünürlük', 'Kristal netlik', 'IMAX kalite', 'HDR', 'HDR10', 'Anamorfik', 'Film grain', 'Sharp', 'Ultra sharp', 'Studio quality', 'Award winning', 'Masterpiece', 'Highly detailed'], isMulti: false, instruction: 'Tek bir kalite seviyesi seçin veya özel yazın.' },
+            { 
+                id: 'kalite', 
+                title: { tr: '12. Kalite/Çözünürlük (Quality/Resolution)', en: '12. Quality/Resolution' }, 
+                options: [
+                    { tr: '4K', en: '4K' }, { tr: '8K', en: '8K' }, { tr: 'HD', en: 'HD' }, { tr: 'Full HD', en: 'Full HD' }, { tr: 'Ultra HD', en: 'Ultra HD' }, { tr: 'Yüksek detay', en: 'High detail' }, 
+                    { tr: 'Ultra yüksek detay', en: 'Ultra high detail' }, { tr: 'Profesyonel kalite', en: 'Professional quality' }, { tr: 'Sinematik kalite', en: 'Cinematic quality' }, { tr: 'Fotoğraf kalitesi', en: 'Photographic quality' }, 
+                    { tr: 'Ultra gerçekçi', en: 'Ultra realistic' }, { tr: 'Yüksek çözünürlük', en: 'High resolution' }, { tr: 'Kristal netlik', en: 'Crystal clear' }, { tr: 'IMAX kalite', en: 'IMAX quality' }, 
+                    { tr: 'HDR', en: 'HDR' }, { tr: 'HDR10', en: 'HDR10' }, { tr: 'Anamorfik', en: 'Anamorphic' }, { tr: 'Film grain', en: 'Film grain' }, { tr: 'Sharp', en: 'Sharp' }, 
+                    { tr: 'Ultra sharp', en: 'Ultra sharp' }, { tr: 'Studio quality', en: 'Studio quality' }, { tr: 'Award winning', en: 'Award winning' }, { tr: 'Masterpiece', en: 'Masterpiece' }, { tr: 'Highly detailed', en: 'Highly detailed' }
+                ], 
+                isMulti: false, 
+                instruction: { tr: 'Tek bir kalite seviyesi seçin veya özel yazın.', en: 'Select a single quality level or write your own.' }
+            },
             
             // 13. SERBEST PROMPT ALANI (Ek Anahtar Kelimeler)
-            { id: 'serbest_prompt', title: '13. Serbest Prompt Alanı (Ek Anahtar Kelimeler)', isFreeText: true, instruction: 'Buraya serbest anahtar kelimeler, sanatçı referansları veya model ipuçları ekleyebilirsiniz. (Virgülle ayırarak birden fazla ifade girebilirsiniz)' }
+            { 
+                id: 'serbest_prompt', 
+                title: { tr: '13. Serbest Prompt Alanı (Ek Anahtar Kelimeler)', en: '13. Free Prompt Area (Additional Keywords)' }, 
+                isFreeText: true, 
+                instruction: { 
+                    tr: 'Buraya serbest anahtar kelimeler, sanatçı referansları veya model ipuçları ekleyebilirsiniz. (Virgülle ayırarak birden fazla ifade girebilirsiniz)', 
+                    en: 'You can add free keywords, artist references, or model hints here. (You can enter multiple expressions separated by commas)' 
+                } 
+            }
         ];
 
         let currentStep = 0; // Tek sayfa olduğu için adım mantığı kalktı, ancak kategorileri döngülemek için tutuldu.
@@ -572,6 +871,9 @@
 
         // YENİ: Sayfa Görünümleri
         let homepageView, promptCreatorView, startBtn, homeBtn;
+        
+        // YENİ: Dil Butonları
+        let langTrBtn, langEnBtn, langTrBtnHome, langEnBtnHome;
 
 
         // Firebase Hazırlıkları
@@ -588,6 +890,7 @@
         import { getFirestore, doc, setDoc, collection, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // Firebase Başlatma
+        // NOT: try...catch bloğu, bildirilen hataya karşılık incelendi ve doğrulandı.
         const initFirebase = async () => {
             try {
                 const app = initializeApp(firebaseConfig);
@@ -645,11 +948,11 @@
                 const titleIcon = getIconSvg(category.id) || getIconSvg('serbest_prompt'); 
                 return `
                     <div class="category-box free-text-box bg-white rounded-xl shadow-sm md:col-span-3">
-                        <h3 class="text-xl font-semibold text-gray-800 mb-4">${titleIcon} ${category.title}</h3>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">${titleIcon} ${category.title[currentLang]}</h3>
                         
                         <textarea id="textarea-${category.id}" 
                                 data-category-id="${category.id}"
-                                placeholder="${category.instruction}"
+                                placeholder="${category.instruction[currentLang]}"
                                 rows="5"
                                 class="w-full p-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-300 focus:border-orange-500 transition duration-200 text-gray-700 font-medium">${currentValue}</textarea>
                     </div>
@@ -661,15 +964,15 @@
 
             let optionsHtml = '';
             category.options.forEach(option => {
-                const isSelected = isOptionSelected(category.id, option);
+                const isSelected = isOptionSelected(category.id, option.en); // Değer olarak İngilizce'yi kontrol et
                 optionsHtml += `<button 
                                 class="option-card 
                                 ${isSelected ? 'selected' : 'bg-white hover:bg-gray-100'} 
                                 text-gray-700 font-medium border border-gray-200" 
                                 data-category-id="${category.id}" 
-                                data-value="${option}"
+                                data-value="${option.en}"
                                 data-is-multi="${category.isMulti || false}">
-                                ${option}
+                                ${option[currentLang]}
                             </button>`;
             });
 
@@ -677,8 +980,8 @@
 
             return `
                 <div class="category-box">
-                    <h3 class="text-lg font-bold text-gray-800 mb-3">${getIconSvg(category.id)} ${category.title}</h3>
-                    ${category.instruction ? `<p class="text-xs mb-3 text-gray-500">${category.instruction}</p>` : ''}
+                    <h3 class="text-lg font-bold text-gray-800 mb-3">${getIconSvg(category.id)} ${category.title[currentLang]}</h3>
+                    ${category.instruction ? `<p class="text-xs mb-3 text-gray-500">${category.instruction[currentLang]}</p>` : ''}
                     
                     <div class="options-grid">
                         ${optionsHtml}
@@ -686,12 +989,12 @@
 
                     ${showCustomInput ? `
                     <div class="custom-input-wrapper mt-4 flex flex-col items-start">
-                        <button id="custom-write-btn-${category.id}" data-category-id="${category.id}" class="custom-write-button py-2 px-4 rounded-xl text-sm transition">
-                            Özel Yaz
+                        <button id="custom-write-btn-${category.id}" data-category-id="${category.id}" class="custom-write-button py-2 px-4 rounded-xl text-sm transition" data-translate-key="buttons.customWrite">
+                            ${translations[currentLang].buttons.customWrite}
                         </button>
                         <input type="text" 
                             id="custom-input-${category.id}"
-                            placeholder="Özel değerinizi buraya yazın..."
+                            placeholder="${translations[currentLang].buttons.customPlaceholder}"
                             value="${customValue}"
                             class="custom-input w-full mt-3 p-3 border rounded-xl focus:ring-2 focus:ring-orange-300 focus:border-orange-500 transition duration-200 text-xs"
                             oninput="handleCustomInput('${category.id}', this.value)"
@@ -718,7 +1021,7 @@
             
             if (Array.isArray(selection)) return ''; 
 
-            if (options && options.includes(selection)) { 
+            if (options && options.map(o => o.en).includes(selection)) { // Seçimin İngilizce değerler arasında olup olmadığını kontrol et
                 return ''; 
             }
             return selection;
@@ -727,7 +1030,7 @@
         function handleOptionClick(event) {
             const card = event.currentTarget;
             const categoryId = card.dataset.categoryId;
-            const value = card.dataset.value;
+            const value = card.dataset.value; // Bu her zaman İngilizce değer olacak
             const isMulti = card.dataset.isMulti === 'true';
 
             if (isMulti) {
@@ -775,7 +1078,7 @@
                 const customWriteBtn = container.querySelector(`#custom-write-btn-${categoryId}`);
                 if (customInput && customInput.style.display !== 'none') {
                     customInput.style.display = 'none';
-                    customWriteBtn.textContent = 'Özel Yaz';
+                    customWriteBtn.textContent = translations[currentLang].buttons.customWrite; // Çeviri kullan
                     customInput.value = '';
                 }
             }
@@ -794,7 +1097,7 @@
             if (!isInputVisible) {
                 customInput.style.display = 'block';
                 customInput.focus();
-                customWriteBtn.textContent = 'İptal Et';
+                customWriteBtn.textContent = translations[currentLang].buttons.cancel; // Çeviri kullan
 
                 const currentSelected = container.querySelectorAll('.option-card.selected');
                 currentSelected.forEach(card => {
@@ -808,7 +1111,7 @@
                 userSelections[categoryId] = customInput.value.trim() || ''; 
             } else {
                 customInput.style.display = 'none';
-                customWriteBtn.textContent = 'Özel Yaz';
+                customWriteBtn.textContent = translations[currentLang].buttons.customWrite; // Çeviri kullan
                 customInput.value = '';
                 delete userSelections[categoryId];
             }
@@ -843,10 +1146,10 @@
             });
 
             document.querySelectorAll('.custom-write-button').forEach(btn => {
-                btn.textContent = 'Özel Yaz';
+                btn.textContent = translations[currentLang].buttons.customWrite; // Çeviri kullan
             });
 
-            showSimpleMessage('Tüm seçimler sıfırlandı.', 'bg-yellow-100 text-yellow-800');
+            showSimpleMessage(translations[currentLang].messages.reset, 'bg-yellow-100 text-yellow-800'); // Çeviri kullan
         }
         
         async function savePromptToFirestore(promptData) {
@@ -855,7 +1158,8 @@
             try {
                 const promptsCollectionRef = collection(db, `/artifacts/${appId}/users/${userId}/prompts`);
                 await setDoc(doc(promptsCollectionRef), {
-                    ...promptData,
+                    prompt: promptData.finalPrompt, // Sadece İngilizce prompt'u kaydet
+                    uiLanguage: currentLang, // Kullanıcının arayüz dilini kaydet
                     createdAt: serverTimestamp()
                 });
                 console.log("Prompt başarıyla kaydedildi.");
@@ -888,8 +1192,8 @@
             handbookModal.querySelector('div:last-child').classList.add('scale-95');
         }
 
-        const loadHandbookContent = () => {
-            const handbookMarkdown = `# AI Prompt Oluşturma El Kitabı
+        // EL KİTABI İÇERİĞİ (TÜRKÇE)
+        const handbookMarkdownTR = `# AI Prompt Oluşturma El Kitabı
 
 Bu el kitabı, görsel prompt oluşturucumuzdaki 13 kategori ve Serbest Prompt alanı hakkında detaylı bilgi ve profesyonel ipuçları sunar.
 
@@ -937,7 +1241,7 @@ Görüntünün genel görsel estetiğini belirler. Sonucun karakterini ve dokusu
 
 * **Popüler Stiller:** Anime, Manga, Pop Art, Cyberpunk, Steampunk.
 
-## 5. Kamera Açısı/Çekim Planı (Camera Angle/Shot Plan)
+## 5. Kamera Açısı/ÇEKİM PLANI (Camera Angle/Shot Plan)
 
 Görüntünün ne kadar yakından ve hangi açıdan çekileceğini belirler. Hikayenin anlatımını etkiler.
 
@@ -1040,6 +1344,162 @@ Kategorilere sığmayan, sanatsal veya teknik açıdan özel detayları ekleyebi
 **Yüksek Kaliteli Prompt Oluşturma Kuralı:**
 Promptlarınızı genel olarak şu akışta düzenleyin: **[Özne]**, **[Aksiyon/Duygu]**, **[Mekan]**, **[Stil]**, **[Işıklandırma & Lens]**, **[Kalite Detayları]**.`;
 
+        // YENİ: EL KİTABI İÇERİĞİ (İNGİLİZCE)
+        const handbookMarkdownEN = `# AI Prompt Generation Handbook
+
+This handbook provides detailed information and professional tips about the 13 categories and the Free Prompt area in our visual prompt generator.
+
+---
+
+## 1. Main Subject/Entity
+
+The primary element at the center of your prompt. It determines the AI's focus.
+
+* **Human Subjects:** Specify age group, gender, profession, or character type.
+
+* **Other Subjects:** Add details like animal species, breed, object features, or fantastic creature details.
+
+* **Tip:** The more clearly you define your subject, the more successful the result.
+
+## 2. Action/Emotion
+
+Determines what your subject is doing or their emotional state. It adds dynamism and emotional depth to the image.
+
+* **Physical Actions:** Use verbs indicating movement like running, dancing, fighting.
+
+* **Emotional States:** Clarify emotional responses like happiness, sadness, mystery.
+
+* **Pro Tip:** Combine action and emotion (e.g., "Dancing with joy").
+
+## 3. Location/Background
+
+The place and environment where the scene takes place. Location choice largely determines the atmosphere and context.
+
+* **Natural/Urban/Indoor:** Choose specific places like forest, city, hospital, palace.
+
+* **Fantastic Locations:** Use imaginary settings like space, cyberpunk environment.
+
+* **Tip:** Don't forget to add time and weather details like day, night, rainy, or snowy.
+
+## 4. Art Style
+
+Determines the overall visual aesthetic of the image. It affects the character and texture of the result.
+
+* **Realistic Styles:** Hyper Realistic, Photorealistic, Cinematic.
+
+* **Digital Art:** Digital Art, Concept Art, 3D Render.
+
+* **Traditional Art:** Oil Painting, Watercolor, Charcoal Sketch.
+
+* **Popular Styles:** Anime, Manga, Pop Art, Cyberpunk, Steampunk.
+
+## 5. Kamera Açısı/ÇEKİM PLANI (Camera Angle/Shot Plan)
+
+Determines how closely and from what angle the image will be captured. It affects the storytelling.
+
+* **Shot Plans:** Close-Up (emotional connection), Long Shot (environmental context).
+
+* **Angle Types:** Bird's-Eye View (wide area), Worm's-Eye View (sky), Low Angle (power/authority).
+
+* **Special Shots:** Drone Shot, Over Shoulder, Point of View (POV).
+
+## 6. Lens Seçimi (Lens Selection)
+
+Controls the perspective and depth of field (bokeh) of the image.
+
+* **Wide Angle (14-35mm):** Landscape, architecture.
+
+* **Standard (35-85mm):** Natural perspective, everyday photography.
+
+* **Telefoto (85mm+):** Portrait, background blur (bokeh), compressed perspective.
+
+* **Special:** Macro (detail), Anamorphic (cinema film look).
+
+## 7. Işıklandırma (Lighting)
+
+Determines the emotional tone and quality of the image.
+
+* **Natural Light:** Golden Hour, Blue Hour, Sunset/Sunrise.
+
+* **Artificial Light:** Neon, LED, Studio Light, Ring Light.
+
+* **Effects:** God Rays, Volumetric Light, Lens Flare.
+
+* **Tip:** Cool light (blue tones) adds mystery or sadness; Warm light (yellow tones) adds peace and romance.
+
+## 8. Ruh Hali/Atmosfer (Mood/Atmosphere)
+
+Determines the emotional feeling the image will give to the viewer.
+
+* **Positive:** Happy, Energetic, Hopeful, Peaceful.
+
+* **Dramatic:** Mysterious, Scary, Melancholic, Dark.
+
+* **Special:** Nostaljik, Surrealist (Dream-like), Dynamic.
+
+* **Tip:** Support your mood with color palette and lighting choices.
+
+## 9. Kompozisyon (Composition)
+
+The arrangement of elements in the image. Good composition makes the image professional and attractive.
+
+* **Basic Rules:** Rule of Thirds, Golden Ratio.
+
+* **Placement:** Centered Composition, Symmetrical/Asymmetrical.
+
+* **Techniques:** Leading Lines, Frame Within a Frame, Negative Space.
+
+* **Tip:** Diagonal lines give dynamism; symmetry gives a sense of balance.
+
+## 10. Renk Paleti (Color Palette)
+
+The overall color scheme of the image.
+
+* **Harmonies:** Monochrome (Single color tones), Complementary (Opposite colors), Analogous (Nearby colors).
+
+* **Tones:** Pastel Colors, Vibrant Colors, Warm/Cool Tones.
+
+* **Dominant Colors:** Primary color emphasis like Red Dominant, Blue Dominant.
+
+## 11. Doku/Materyal (Texture/Material)
+
+The tactile quality of surfaces in the image. Adds realism and depth.
+
+* **Natural:** Wood, Stone, Leather, Fabric, Feather, Grass.
+
+* **Metal:** Gold, Silver, Steel, Bronze.
+
+* **Surface:** Smooth, Rough, Glossy, Matte.
+
+* **Tip:** Combine different textures to create contrast (e.g., "Smooth metal and rough wood").
+
+## 12. Kalite/Çözünürlük (Quality/Resolution)
+
+Determines the level of detail, clarity, and visual excellence of the final output.
+
+* **Resolution:** 4K, 8K, HD, Ultra HD.
+
+* **Quality Descriptors:** Ultra Realistic, Highly Detailed, Sharp, Masterpiece.
+
+* **Special Formats:** IMAX Quality, HDR, Anamorphic.
+
+* **Tip:** Adding these terms to the end of the prompt usually makes the AI focus on quality.
+
+## 13. Serbest Prompt Alanı (Ek Anahtar Kelimeler)
+
+An area to add specific artistic or technical details that don't fit into the categories.
+
+* **Usage:** Add artist references (e.g., "in the style of Greg Rutkowski"), specific render engines ("Unreal Engine Render"), extra light effects ("Volumetric light").
+
+* **Best Practice:** Use this for the finishing touches that will support and enhance your selections from the main categories.
+
+**High-Quality Prompt Generation Rule:**
+Generally, organize your prompts in this flow: **[Subject]**, **[Action/Emotion]**, **[Location]**, **[Style]**, **[Lighting & Lens]**, **[Quality Details]**.`;
+
+
+        const loadHandbookContent = () => {
+            const handbookMarkdown = (currentLang === 'tr') ? handbookMarkdownTR : handbookMarkdownEN;
+            
             let htmlContent = handbookMarkdown
                 .replace(/### (.*)/g, '<h3>$1</h3>') 
                 .replace(/## (.*)/g, '<h2>$1</h2>') 
@@ -1090,7 +1550,7 @@ Promptlarınızı genel olarak şu akışta düzenleyin: **[Özne]**, **[Aksiyon
             const copyBtn = document.getElementById('copy-final-btn');
             
             if (!textarea || !textarea.value || !copyBtn) {
-                showSimpleMessage('Kopyalanacak prompt bulunamadı.', 'bg-red-100 text-red-800');
+                showSimpleMessage(translations[currentLang].messages.copyFail, 'bg-red-100 text-red-800'); // Çeviri kullan
                 return;
             }
             
@@ -1102,20 +1562,20 @@ Promptlarınızı genel olarak şu akışta düzenleyin: **[Özne]**, **[Aksiyon
                 
                 // Başarı durumunda butonu yeşile çevir
                 const originalText = copyBtn.textContent;
-                copyBtn.textContent = 'Kopyalandı!';
+                copyBtn.textContent = translations[currentLang].modal.copied; // Çeviri kullan
                 copyBtn.classList.add('copy-success');
                 
-                showSimpleMessage(`Prompt panoya kopyalandı!`, 'bg-green-100 text-green-800');
+                showSimpleMessage(translations[currentLang].messages.copySuccess, 'bg-green-100 text-green-800'); // Çeviri kullan
 
                 // 1.5 saniye sonra eski haline döndür
                 setTimeout(() => {
-                    copyBtn.textContent = originalText;
+                    copyBtn.textContent = translations[currentLang].modal.copy; // Çeviri kullan
                     copyBtn.classList.remove('copy-success');
                 }, 1500);
                 
             } catch (err) {
                 console.error('Kopyalama başarısız:', err);
-                showSimpleMessage('Kopyalama başarısız oldu.', 'bg-red-100 text-red-800');
+                showSimpleMessage(translations[currentLang].messages.copyFail, 'bg-red-100 text-red-800'); // Çeviri kullan
             }
         };
         
@@ -1138,22 +1598,77 @@ Promptlarınızı genel olarak şu akışta düzenleyin: **[Özne]**, **[Aksiyon
                 }
             });
 
-            const finalPrompt = promptParts.join(', ');
+            const finalPrompt = promptParts.join(', '); // Bu, 'data-value' sayesinde her zaman İngilizce olacak
 
             if (!isAnySelection) {
-                showSimpleMessage('Lütfen en az bir kategori seçimi yapın.', 'bg-red-100 text-red-800');
+                showSimpleMessage(translations[currentLang].messages.noSelection, 'bg-red-100 text-red-800'); // Çeviri kullan
                 return;
             }
 
             // 2. Modalı aç ve prompt'u göster
             openModal();
-            promptOutputFinal.value = finalPrompt;
+            promptOutputFinal.value = finalPrompt; // Modal'a İngilizce prompt'u yaz
 
-            // 3. Prompt'u kaydet (Sadece Türkçe/Final versiyonu)
+            // 3. Prompt'u kaydet (Sadece İngilizce/Final versiyonu)
             await savePromptToFirestore({ 
-                turkish: finalPrompt,
-                finalPrompt: finalPrompt // Tutarlılık için
+                finalPrompt: finalPrompt // İngilizce prompt'u kaydet
             });
+        };
+
+        // YENİ: Tüm UI metinlerini güncelleyen fonksiyon
+        const updateAllText = () => {
+            const langData = translations[currentLang];
+            
+            document.querySelectorAll('[data-translate-key]').forEach(element => {
+                const key = element.dataset.translateKey;
+                const type = element.dataset.translateType || 'innerHTML'; // veya placeholder, data-text vb.
+                
+                // Anahtarın bulunması için objede gezin
+                let value = key.split('.').reduce((obj, i) => (obj ? obj[i] : null), langData);
+                
+                if (value) {
+                    if (type === 'innerHTML') {
+                        element.innerHTML = value;
+                    } else if (type === 'placeholder') {
+                        element.placeholder = value;
+                    } else if (type === 'data-text') {
+                        element.dataset.text = value; // Updates data-text (for the ::before)
+                        element.innerHTML = value;    // ALSO update the innerHTML (to fix overlap)
+                    }
+                }
+            });
+
+            // Özel buton metinlerini güncelle (renderAllCategories içinde de var, ama ilk yükleme için burada)
+            document.querySelectorAll('.custom-write-button').forEach(btn => {
+                btn.textContent = langData.buttons.customWrite;
+            });
+        };
+        
+        // YENİ: Dili ayarlayan ana fonksiyon
+        const setLanguage = (lang) => {
+            if (lang !== 'tr' && lang !== 'en') return;
+            currentLang = lang;
+
+            // Buton aktif stillerini güncelle (Her iki set için)
+            if (langTrBtn && langEnBtn) {
+                langTrBtn.classList.toggle('lang-btn-active', lang === 'tr');
+                langEnBtn.classList.toggle('lang-btn-active', lang === 'en');
+            }
+            if (langTrBtnHome && langEnBtnHome) {
+                langTrBtnHome.classList.toggle('lang-btn-active', lang === 'tr');
+                langEnBtnHome.classList.toggle('lang-btn-active', lang === 'en');
+            }
+
+            // Tüm metinleri güncelle
+            updateAllText();
+            
+            // Kategorileri seçilen dilde yeniden oluştur
+            renderAllCategories();
+            
+            // El kitabı içeriğini (eğer açıksa) yeniden yükle
+            if (handbookModal.classList.contains('opacity-0') === false) {
+                loadHandbookContent();
+            }
         };
 
 
@@ -1165,8 +1680,14 @@ Promptlarınızı genel olarak şu akışta düzenleyin: **[Özne]**, **[Aksiyon
             startBtn = document.getElementById('start-btn');
             homeBtn = document.getElementById('home-btn');
 
-            // Kategori render işlemini hemen yap
-            renderAllCategories();
+            // YENİ: Dil butonlarını al (Her iki set)
+            langTrBtn = document.getElementById('lang-tr-btn');
+            langEnBtn = document.getElementById('lang-en-btn');
+            langTrBtnHome = document.getElementById('lang-tr-btn-home');
+            langEnBtnHome = document.getElementById('lang-en-btn-home');
+
+            // Kategori render işlemini hemen yap (setLanguage içinde yapılacak)
+            // renderAllCategories(); 
             
             // Firebase'i başlat
             initFirebase(); 
@@ -1188,6 +1709,20 @@ Promptlarınızı genel olarak şu akışta düzenleyin: **[Özne]**, **[Aksiyon
                 });
             }
             
+            // YENİ: Dil Değiştirme Listener'ları (Her iki set)
+            if (langTrBtn) {
+                langTrBtn.addEventListener('click', () => setLanguage('tr'));
+            }
+            if (langEnBtn) {
+                langEnBtn.addEventListener('click', () => setLanguage('en'));
+            }
+            if (langTrBtnHome) {
+                langTrBtnHome.addEventListener('click', () => setLanguage('tr'));
+            }
+            if (langEnBtnHome) {
+                langEnBtnHome.addEventListener('click', () => setLanguage('en'));
+            }
+
             generateBtn.addEventListener('click', generatePrompt);
             resetBtn.addEventListener('click', resetAll); 
             
@@ -1212,16 +1747,13 @@ Promptlarınızı genel olarak şu akışta düzenleyin: **[Özne]**, **[Aksiyon
                     closeHandbookModal();
                 }
             });
+
+            // YENİ: Başlangıç dilini ayarla
+            setLanguage('tr');
         });
     </script>
 </body>
 </html>
-
-
-
-
-
-
 
 
 
