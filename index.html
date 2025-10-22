@@ -733,6 +733,7 @@
         function handleCustomInput(categoryId, value) {
             userSelections[categoryId] = value.trim();
         }
+        window.handleCustomInput = handleCustomInput; // HATA DÜZELTMESİ: Fonksiyonu global kapsama ekle
 
         function resetAll() {
             for (const key in userSelections) {
@@ -1107,3 +1108,4 @@ Promptlarınızı genel olarak şu akışta düzenleyin: **[Özne]**, **[Aksiyon
     </script>
 </body>
 </html>
+
