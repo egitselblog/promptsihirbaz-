@@ -416,6 +416,7 @@
         const getIconSvg = (name) => {
             const icons = {
                 // Ana Kategoriler için semboller
+                'referans_gorsel': `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="category-icon"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>`, // YENİ: Image Icon
                 'ana_konu': `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="category-icon"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>`, // User
                 'aksiyon_duygu': `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="category-icon"><path d="M14.5 12.5l-3 3-2 2"></path><path d="M13 19l-3 3-2-2"></path><path d="M18 10l-3 3-2 2"></path><path d="M22 8l-3 3-2 2"></path><path d="M16 4l-3 3-2 2"></path><path d="M10 2l-3 3-2 2"></path></svg>`, // Activity
                 'mekan': `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="category-icon"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>`, // MapPin
@@ -434,6 +435,9 @@
         };
 
         const categoriesData = [
+            // 0. REFERANS GÖRSEL (YENİ EKLENDİ)
+            { id: 'referans_gorsel', title: '0. Referans Görsel (İsteğe bağlı)', isFreeText: true, instruction: 'referans görseliniz varsa burada belirtiniz. örn: Gönderilen fotoğrafı kimlik referansı olarak kullanın.Fotoğraftaki kişinin yüzünü ve kimliğinin tamamını koruyun, kişisel görünümü değiştirmeyin.' },
+
             // 1. ANA KONU/ÖZNE (Main Subject/Entity)
             { id: 'ana_konu', title: '1. Ana Konu/Özne (Main Subject/Entity)', options: ['Genç kadın', 'Yaşlı adam', 'Çocuk', 'Kedi', 'Ejder', 'Köpek', 'Robot', 'Melek', 'Savaşçı', 'Prenses', 'Büyücü', 'Astronot', 'Şef', 'Doktor', 'Sanatçı', 'Müzisyen', 'Aile', 'Çift', 'Arkadaşlar', 'Araba', 'Motosiklet', 'Bina', 'Ev', 'Saray', 'Kale', 'Köprü', 'Gemi', 'Uçak', 'Manzara', 'Portre'], isMulti: false },
             
@@ -552,19 +556,28 @@
                 btn.addEventListener('click', toggleCustomInput);
             });
             
-            document.getElementById('serbest-prompt-textarea')?.addEventListener('input', (event) => {
-                userSelections['serbest_prompt'] = event.target.value.trim();
+            // DEĞİŞTİRİLDİ: Birden fazla metin alanını işlemesi için güncellendi
+            categoryWrapper.querySelectorAll('textarea[data-category-id]').forEach(textarea => {
+                textarea.addEventListener('input', (event) => {
+                    const categoryId = event.target.dataset.categoryId;
+                    if (categoryId) {
+                        userSelections[categoryId] = event.target.value.trim();
+                    }
+                });
             });
         }
         
         function createCategoryHtml(category) {
             if (category.isFreeText) {
                 const currentValue = userSelections[category.id] || '';
+                // YENİ: İkonu kategori ID'sine göre al, bulamazsa serbest_prompt ikonunu kullan
+                const titleIcon = getIconSvg(category.id) || getIconSvg('serbest_prompt'); 
                 return `
                     <div class="category-box free-text-box bg-white rounded-xl shadow-sm md:col-span-3">
-                        <h3 class="text-xl font-semibold text-gray-800 mb-4">${getIconSvg(category.id)} ${category.title}</h3>
-                        ${category.instruction ? `<p class="text-sm mb-4 text-gray-500">${category.instruction}</p>` : ''}
-                        <textarea id="serbest-prompt-textarea"
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">${titleIcon} ${category.title}</h3>
+                        
+                        <textarea id="textarea-${category.id}" 
+                                data-category-id="${category.id}"
                                 placeholder="${category.instruction}"
                                 rows="5"
                                 class="w-full p-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-300 focus:border-orange-500 transition duration-200 text-gray-700 font-medium">${currentValue}</textarea>
@@ -609,7 +622,7 @@
                             id="custom-input-${category.id}"
                             placeholder="Özel değerinizi buraya yazın..."
                             value="${customValue}"
-                            class="w-full mt-3 p-3 border rounded-xl focus:ring-2 focus:ring-orange-300 focus:border-orange-500 transition duration-200 text-xs"
+                            class="custom-input w-full mt-3 p-3 border rounded-xl focus:ring-2 focus:ring-orange-300 focus:border-orange-500 transition duration-200 text-xs"
                             oninput="handleCustomInput('${category.id}', this.value)"
                             style="display: ${isCustomActive ? 'block' : 'none'};"
                         />
@@ -745,8 +758,10 @@
                 input.style.display = 'none';
             });
 
-            const serbestPromptArea = document.getElementById('serbest-prompt-textarea');
-            if (serbestPromptArea) serbestPromptArea.value = '';
+            // DEĞİŞTİRİLDİ: Birden fazla metin alanını sıfırlaması için güncellendi
+            document.querySelectorAll('textarea[data-category-id]').forEach(textarea => {
+                textarea.value = '';
+            });
             
             document.querySelectorAll('.option-card.selected').forEach(card => {
                 card.classList.remove('selected');
@@ -1108,4 +1123,6 @@ Promptlarınızı genel olarak şu akışta düzenleyin: **[Özne]**, **[Aksiyon
     </script>
 </body>
 </html>
+
+
 
